@@ -1,4 +1,4 @@
-package com.reactp
+package com.newsapp
 
 import android.app.Application
 import com.facebook.react.PackageList
