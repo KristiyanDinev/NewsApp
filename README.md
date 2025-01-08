@@ -1,4 +1,9 @@
-## News App
+### News App
+- All the code we touch: all things in `src/` folder. 
+!If you know what you are doing then in `package.json`!
+
+### Resourses
+- https://reactnative.dev/docs/text-style-props
 
 ### Software Requrements
 - NodeJS >= 18
@@ -6,13 +11,9 @@
 
 ### Platform Requirements
 - For Android you can build it on Windows and/or Linux.
-[System Requirements for Windows](https://microsoft.github.io/react-native-windows/docs/rnw-dependencies)
-[Setup Enviroment](https://reactnative.dev/docs/set-up-your-environment?os=windows)
-
 - For iOS you can build it on MacOS
 
 ### Android
-
 Debug APK
 ```bash
 npm run start
@@ -59,3 +60,7 @@ Note: Another solution can be to add `ANDROID_HOME` and the location of the SDK 
 7. Select `UpsideDownCake`. You can also use other images if you know them.
 8. Finish up the setup.
 Note: It may ask you to install HAXM. Go for it. If not then you are hopefuly good.
+
+- Emulator has black screen
+1. Wipe the date
+2. Restart emulator
