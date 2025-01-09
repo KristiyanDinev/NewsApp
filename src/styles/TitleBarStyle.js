@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 const sizeOfTitleBar = 27;
 const sizeOfFont = 20;
 
-const TitleBarStyle = StyleSheet.create({
+const titleBarStyle = StyleSheet.create({
 
     box: {
         backgroundColor: "rgb(82, 159, 252)",
@@ -33,4 +33,4 @@ const TitleBarStyle = StyleSheet.create({
 
 });
 
-export default TitleBarStyle;
+export default titleBarStyle;

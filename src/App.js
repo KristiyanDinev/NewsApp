@@ -1,35 +1,33 @@
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
-import TitleBarStyle from './styles/Styles';
+import { Text, View, Dimensions } from 'react-native';
+import TitleBar from './TitleBar';
+import SearchBar from './SearchBar';
 
-const TitleBar = () => {
-  return (
-    <View style={TitleBarStyle.box}>
 
-      <Text style={TitleBarStyle.title}>News / Posts / Studies</Text>
 
-      <TouchableOpacity style={TitleBarStyle.menu} onPress={() => {
-        
-        console.log("pressed")
-        
-        }}>
-        <Text style={TitleBarStyle.menu_text}>☰</Text>
-      </TouchableOpacity>
+/*
+import HTMLView from 'react-native-htmlview';
+ const htmlContent = `<p><a href="http://jsdf.co">&hearts; nice job!</a></p>`;
+<HTMLView value={htmlContent} />
+<HTMLView value={htmlContent} stylesheet={...}/>
+411w 890h - small screen (search bar up)
+841w 640h - square (search bar up)
+1280w 740h - tablet (search bar left)
+*/
 
-    </View >
 
-  );
-}
+
 
 const Host = "https://localhost:5001";
 
-const NewsApp = () => {
+
+export default function NewsApp() {
+  const w = Dimensions.get('window').width;
+  const h = Dimensions.get('window').height;
   return (
     <View >
-      <TitleBar/>
+      <TitleBar />
+      <SearchBar />
     </View >
   );
 };
-
-
-export default NewsApp;

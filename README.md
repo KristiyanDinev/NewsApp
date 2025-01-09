@@ -4,6 +4,9 @@
 
 ### Resourses
 - https://reactnative.dev/docs/text-style-props
+- https://github.com/jsdf/react-native-htmlview
+- for linking `npx react-native-asset`
+- https://emojidb.org/search-symbol-emojis
 
 ### Software Requrements
 - NodeJS >= 18
