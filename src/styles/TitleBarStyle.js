@@ -7,6 +7,7 @@ const sizeOfFont = 20;
 const titleBarStyle = StyleSheet.create({
 
     box: {
+        flexDirection: "row",
         backgroundColor: "rgb(82, 159, 252)",
         padding: sizeOfTitleBar,
         justifyContent: 'space-evenly'

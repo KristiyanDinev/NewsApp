@@ -1,6 +1,9 @@
 ### News App
 - All the code we touch: all things in `src/` folder. 
 !If you know what you are doing then in `package.json`!
+!If you know what you are doing then in `ios/` or/and `android`!
+
+- Minimum recomendation for screen: `hight 2400px. width 1080px. 6,0" inch screen.`
 
 ### Resourses
 - https://reactnative.dev/docs/text-style-props

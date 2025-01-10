@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Dimensions } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import TitleBar from './TitleBar';
 import SearchBar from './SearchBar';
 
@@ -25,9 +25,10 @@ export default function NewsApp() {
   const w = Dimensions.get('window').width;
   const h = Dimensions.get('window').height;
   return (
-    <View >
-      <TitleBar />
+      <View>
+        <TitleBar />
       <SearchBar />
-    </View >
+      </View>
+      
   );
 };
