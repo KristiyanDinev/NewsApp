@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, Dimensions } from 'react-native';
-import TitleBar from './TitleBar';
-import SearchBar from './SearchBar';
-
+import { createStaticNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './screens/HomeScreen';
+import OptionsScreen from './screens/OptionsScreen';
+import AboutAppScreen from './screens/AboutAppScreen';
+import ContactUsScreen from './screens/ContactUsScreen';
+import AdminLoginScreen from './screens/AdminLoginScreen';
 
 
 /*
@@ -21,14 +24,28 @@ import HTMLView from 'react-native-htmlview';
 const Host = "https://localhost:5001";
 
 
+const RootStack = createNativeStackNavigator({
+  initialRouteName: 'Home',
+  screenOptions: {
+    headerShown: false,
+    title: ''
+  },
+  screens: {
+    Home: {
+      screen: HomeScreen,
+      options: {},
+    },
+    Options: OptionsScreen,
+    AboutApp: AboutAppScreen,
+    ContactUs: ContactUsScreen,
+    AdminLogin: AdminLoginScreen,
+  },
+});
+
+const Navigation = createStaticNavigation(RootStack);
+
 export default function NewsApp() {
-  const w = Dimensions.get('window').width;
-  const h = Dimensions.get('window').height;
   return (
-      <View>
-        <TitleBar />
-      <SearchBar />
-      </View>
-      
+    <Navigation />
   );
 };

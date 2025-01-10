@@ -1,7 +1,7 @@
 ### News App
 - All the code we touch: all things in `src/` folder. 
 !If you know what you are doing then in `package.json`!
-!If you know what you are doing then in `ios/` or/and `android`!
+!If you know what you are doing then in `ios/` or/and `android/` or/and `src/assets/fonts`!
 
 - Minimum recomendation for screen: `hight 2400px. width 1080px. 6,0" inch screen.`
 
@@ -10,6 +10,8 @@
 - https://github.com/jsdf/react-native-htmlview
 - for linking `npx react-native-asset`
 - https://emojidb.org/search-symbol-emojis
+- https://reactnavigation.org/docs/hello-react-navigation?config=static
+- for navigation dependency: `npm install @react-navigation/native @react-navigation/native-stack` and `npm install react-native-screens react-native-safe-area-context`
 
 ### Software Requrements
 - NodeJS >= 18

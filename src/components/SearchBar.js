@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Dimensions } from 'react-native';
-import searchBarStyle from './styles/SearchBarStyle';
+import searchBarStyle from '../styles/SearchBarStyle';
 
 /*
  marginTop: heightSubmit > submitHightDefault ? heightSubmit - 40 : null
