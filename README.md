@@ -12,6 +12,10 @@
 - https://emojidb.org/search-symbol-emojis
 - https://reactnavigation.org/docs/hello-react-navigation?config=static
 - for navigation dependency: `npm install @react-navigation/native @react-navigation/native-stack` and `npm install react-native-screens react-native-safe-area-context`
+- for save view dependency: `npm install react-native-safe-area-context`
+- Added `android:usesCleartextTraffic="true"` in `android/app/src/main/AndroidManifest.xml`. And created `android/app/src/main/res/xml/network_security_config.xml`
+
+npm install got
 
 ### Software Requrements
 - NodeJS >= 18

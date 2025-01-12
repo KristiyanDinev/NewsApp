@@ -8,7 +8,7 @@ const contactUsStyle = StyleSheet.create({
     box: {
         backgroundColor: "rgb(137, 190, 255)",
         alignItems: 'center',
-        justifyContent: 'space-evenly',
+        justifyContent: 'center',
         width: w,
         height: h,
     },

@@ -1,11 +1,13 @@
 import React from 'react';
 import { createStaticNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import HomeScreen from './screens/HomeScreen';
 import OptionsScreen from './screens/OptionsScreen';
 import AboutAppScreen from './screens/AboutAppScreen';
 import ContactUsScreen from './screens/ContactUsScreen';
 import AdminLoginScreen from './screens/AdminLoginScreen';
+import SavedNewsScreen from './screens/SavedNewsScreen';
 
 
 /*
@@ -19,9 +21,6 @@ import HTMLView from 'react-native-htmlview';
 */
 
 
-
-
-const Host = "https://localhost:5001";
 
 
 const RootStack = createNativeStackNavigator({
@@ -39,6 +38,7 @@ const RootStack = createNativeStackNavigator({
     AboutApp: AboutAppScreen,
     ContactUs: ContactUsScreen,
     AdminLogin: AdminLoginScreen,
+    SavedNews: SavedNewsScreen,
   },
 });
 
@@ -46,6 +46,8 @@ const Navigation = createStaticNavigation(RootStack);
 
 export default function NewsApp() {
   return (
-    <Navigation />
+    <SafeAreaProvider>
+      <Navigation />
+    </SafeAreaProvider>
   );
 };

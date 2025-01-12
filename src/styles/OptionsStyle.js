@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, StatusBar } from 'react-native';
 
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
@@ -8,14 +8,15 @@ const optionsStyle = StyleSheet.create({
     box: {
         backgroundColor: "rgb(137, 190, 255)",
         alignItems: 'center',
-        justifyContent: 'space-evenly',
-        width: w,
-        height: h,
+        justifyContent: 'flex-start',
+        paddingBottom: 150,
     },
+
 
     button: {
         padding: 20,
-        marginBottom: 100,
+        marginBottom: 30,
+        marginTop: 30,
         borderBottomColor: "rgb(82, 109, 142)",
         borderWidth: 3,
         borderTopColor: "rgb(137, 190, 255)",
@@ -28,6 +29,7 @@ const optionsStyle = StyleSheet.create({
         fontSize: 27,
         fontFamily: 'Arial',
 
-    }
+    },
+
 });
 export default optionsStyle;
