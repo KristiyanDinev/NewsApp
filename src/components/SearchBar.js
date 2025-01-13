@@ -29,8 +29,8 @@ const SearchBar = () => {
     }
 
     const submitSearch = () => {
-        console.log("Search: " + text);
-        console.log("Filter: " + filterText);
+        //console.log("Search: " + text);
+        //console.log("Filter: " + filterText);
         for (let tag of giveText.split(";")) {
             tag
         }

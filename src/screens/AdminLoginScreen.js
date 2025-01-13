@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import adminLoginStyle from '../styles/AdminLoginStyle';
 import { CheckAdmin } from '../ServerManager';
+import HTMLView from 'react-native-htmlview';
 
 
 export default function AdminLoginScreen() {
@@ -11,8 +12,8 @@ export default function AdminLoginScreen() {
 
     const submitAdminLogin = async () => {
         CheckAdmin(Password);
+        
     }
-
 
     return (
         <View>
