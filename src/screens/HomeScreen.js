@@ -5,6 +5,7 @@ import SearchBar from '../components/SearchBar';
 
 
 export default function HomeScreen() {
+
     return (
         <View>
             <TitleBar />

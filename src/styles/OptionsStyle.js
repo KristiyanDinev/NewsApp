@@ -9,7 +9,11 @@ const optionsStyle = StyleSheet.create({
         backgroundColor: "rgb(137, 190, 255)",
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingBottom: 150,
+        width: w,
+    },
+
+    scroll_view_fix: {
+        height: 100,
     },
 
 

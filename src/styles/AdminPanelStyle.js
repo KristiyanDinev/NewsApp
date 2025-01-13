@@ -4,17 +4,30 @@ const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
 
-const adminLoginStyle = StyleSheet.create({
+const adminPanelStyle = StyleSheet.create({
     box: {
         backgroundColor: "rgb(137, 190, 255)",
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         width: w,
-        height: h,
+    },
+
+    warning: {
+        color: "rgb(196, 0, 0)",
+        fontSize: 20,
+    },
+
+    success: {
+        color: "rgb(0, 255, 51)",
+        fontSize: 20,
+    },
+
+    form_title: {
+        fontSize: 20,
     },
 
     scroll_view_fix: {
-        height: 400,
+        height: 200,
     },
 
     input: {
@@ -23,20 +36,17 @@ const adminLoginStyle = StyleSheet.create({
         borderWidth: 3,
         width: 200,
         maxWidth: 200,
-        marginTop: 20,
-        marginBottom: 20,
         padding: 7,
+        marginTop: 7,
+        marginBottom: 7,
         height: 50,
-        fontSize: 15,
+        fontSize: 17,
     },
 
     submit: {
         backgroundColor: "rgb(39, 108, 188)",
-        borderRadius: 10,
-        padding: 15,
-        paddingLeft: 23,
-        paddingRight: 23,
-        marginTop: 10,
+        borderRadius: 5,
+        padding: 7,
     },
 
     submit_text: {
@@ -44,9 +54,12 @@ const adminLoginStyle = StyleSheet.create({
         textAlign: 'center',
     },
 
-    stats: {
-        color: "rgb(196, 0, 0)",
-        fontSize: 15,
+    form_box: {
+        borderRadius: 10,
+        backgroundColor: "rgb(73, 158, 255)",
+        padding: 30,
+        margin: 10,
+        alignItems: 'center'
     }
 });
-export default adminLoginStyle;
+export default adminPanelStyle;

@@ -35,6 +35,7 @@ export default function OptionsScreen() {
                     }}>
                         <Text style={optionsStyle.button_text}>Admin Login</Text>
                     </TouchableOpacity>
+                <View style={optionsStyle.scroll_view_fix}></View>
                 </ScrollView>
             
         </View >
