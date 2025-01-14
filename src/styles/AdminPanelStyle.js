@@ -28,6 +28,7 @@ const adminPanelStyle = StyleSheet.create({
 
     scroll_view_fix: {
         height: 200,
+        backgroundColor: "rgb(137, 190, 255)",
     },
 
     input: {
@@ -60,6 +61,17 @@ const adminPanelStyle = StyleSheet.create({
         padding: 30,
         margin: 10,
         alignItems: 'center'
-    }
+    },
+
+
+
+    post_webview: {
+        backgroundColor: "rgb(137, 190, 255)",
+        width: w,
+        height: 900,
+        alignItems: 'center',
+        resizeMode: 'contain',
+        margin: 20,
+    },
 });
 export default adminPanelStyle;

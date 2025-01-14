@@ -6,16 +6,14 @@
 - Minimum recomendation for screen: `hight 2400px. width 1080px. 6,0" inch screen.`
 
 ### Resourses
-- https://reactnative.dev/docs/text-style-props
-- https://github.com/jsdf/react-native-htmlview
 - for linking `npx react-native-asset`
 - https://emojidb.org/search-symbol-emojis
 - https://reactnavigation.org/docs/hello-react-navigation?config=static
-- for navigation dependency: `npm install @react-navigation/native @react-navigation/native-stack` and `npm install react-native-screens react-native-safe-area-context`
-- for save view dependency: `npm install react-native-safe-area-context`
+- Dependencies: `npm install @react-navigation/native @react-navigation/native-stack react-native-screens react-native-safe-area-context react-native-webview`
 - Added `android:usesCleartextTraffic="true"` in `android/app/src/main/AndroidManifest.xml`. And created `android/app/src/main/res/xml/network_security_config.xml`
 
-npm install got
+### TODO
+- Clean code.
 
 ### Software Requrements
 - NodeJS >= 18

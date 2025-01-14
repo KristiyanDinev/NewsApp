@@ -8,7 +8,7 @@ const redirectV = 'follow';
 
 // multipart/form-data
 
-const Host = "http://192.168.1.13:8080";
+export const Host = "http://192.168.1.13:8080";
 
 const adminLoginEndpoint = "/admin/login";
 const adminAddEndpoint = "/admin/add";

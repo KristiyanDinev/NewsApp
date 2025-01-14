@@ -14,6 +14,7 @@ const optionsStyle = StyleSheet.create({
 
     scroll_view_fix: {
         height: 100,
+        backgroundColor: "rgb(137, 190, 255)",
     },
 
 
