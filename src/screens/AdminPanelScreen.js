@@ -68,7 +68,7 @@ const AdminPostEditor = () => {
         </style>
 
 <center>
-        <form action="" id="newsForm">
+        <form id="newsForm">
 			<lable>Title:</lable>
 			<input name="Title" type="text" placeholder="Post Title" id="title">
 			<hr>
@@ -76,13 +76,13 @@ const AdminPostEditor = () => {
 			<input name="Tags" type="text" placeholder="post;bible study;news" id="tags">
 			<hr>
 			<lable>Body (Thanks to SCEditor under MIT)</lable>
-			<textarea name="HTML_body" id="example" rows="20" cols="50" id="body"></textarea>
+			<textarea name="HTML_body" id="example" rows="20" cols="50"></textarea>
 			<hr>
 			<lable>Select Thumbnail</lable>
-			<input name="Files" type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
+			<input name="ThumbnailFile" type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
 			<hr>
 			<lable>Select PDFs</lable>
-			<input name="Files" type="file" accept="application/pdf" id="thum" multiple>
+			<input name="PDFs" type="file" accept="application/pdf" id="p" multiple>
 			<hr>
 			<input type="submit" value="Submit">
 
@@ -98,26 +98,48 @@ const AdminPostEditor = () => {
 
 
 
+            var ThumbnailFileDataBase64 = "";
+            var ThumbnailFileName = "";
+            let fileSelection = document.getElementById("thum");
+            fileSelection.addEventListener('change', function(e) {
+                let targetFile = e.target.files[0];
+                if (targetFile) {
+                    ThumbnailFileName = targetFile.name;
+                    ThumbnailFileDataBase64 = btoa(targetFile);
+                }            
+            });
+
             let newsForm = document.getElementById("newsForm");
             newsForm.addEventListener("submit", (e) => {
                 e.preventDefault();
+                
+
                 var formData  = new FormData();
                 formData.append('Title', document.getElementById("title").value);
                 formData.append('Tags', document.getElementById("tags").value);
-                formData.append('HTML_body', document.getElementById("body").value);
-                formData.append('Files', document.getElementById("thum").value);
+                formData.append('HTML_body', document.getElementById("example").value);
 
-                /*
-                Title="+document.getElementById("title").value+
-                        "&Tags="+document.getElementById("tags").value+
-                        "&HTML_body="+document.getElementById("body").value+
-                        "&Files="+document.getElementById("thum").value
-                */
+                var Thum = document.getElementById("thum").files[0];
+                if (Thum) {
 
-                // headers: { "Content-type": "multipart/form-data" }
+                }
+
+                var pdfs = document.getElementById("p").files;
+                for (let i = 0; i < pdfs.length; i++) {
+
+                        var x = pdfs[i];
+                }
+                
+                
+
+                // headers: { "Content-Type": "multipart/form-data" }
+                // headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+
+
                 fetch("`+Host+`/news", {
                     method: "POST",
-                    body: formData
+                    body: formData,
+                    redirect: "follow"
                 })
                     .then((response) => alert(response.status))
                     .catch((e) => alert("err: "+e));
