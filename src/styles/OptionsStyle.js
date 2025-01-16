@@ -10,11 +10,11 @@ const optionsStyle = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         width: w,
+        height: h,
     },
 
     scroll_view_fix: {
         height: 100,
-        backgroundColor: "rgb(137, 190, 255)",
     },
 
 

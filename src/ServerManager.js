@@ -15,11 +15,14 @@ const adminAddEndpoint = "/admin/add";
 const adminEditEndpoint = "/admin/edit";
 const adminDeleteEndpoint = "/admin/remove";
 
-var AdminPassword = "";
+const newsEndpoint = "/news/";
+
+export var AdminPassword = "";
 
 export const setAdmin = (p) => {
     AdminPassword = p;
 }
+
 
 export const CheckAdmin = async (pass) => {
     try {
@@ -80,6 +83,22 @@ export const DeleteAdmin = async (delpass) => {
         });
 
         return res.status == 200;
+
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+
+export const SearchNews = async (search, filter) => {
+    try {
+        const res = await fetch(Host + newsEndpoint + "search?search="+search + "&tags=" + filter, {
+            method: "GET",
+            redirect: redirectV,
+        });
+        // res.status == 200
+
+        console.log(res);
 
     } catch (error) {
         console.error(error)
