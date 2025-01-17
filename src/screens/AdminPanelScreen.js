@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import AdminPanelStyle from '../styles/AdminPanelStyle'
 import { AddAdmin, EditAdmin, DeleteAdmin, Host, AdminPassword, SearchNews } from '../ServerManager';
 import searchBarStyle from '../styles/SearchBarStyle';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 
 
 
@@ -73,10 +72,10 @@ const AdminPostEditor = () => {
 			<lable>Title:</lable>
 			<input name="Title" type="text" placeholder="Post Title" id="title">
 			<hr>
-			<lable>Tags:</lable>
+			<lable>(' will be replaced by ") Tags:</lable>
 			<input name="Tags" type="text" placeholder="post;bible study;news" id="tags">
 			<hr>
-			<lable>Body (Thanks to SCEditor under MIT)</lable>
+			<lable>Body (Using SCEditor under MIT)</lable>
 			<textarea name="HTML_body" id="example" rows="20" cols="50"></textarea>
 			<hr>
 			<lable>Select Thumbnail</lable>
@@ -153,9 +152,7 @@ const AdminPostEditor = () => {
                     method: "POST",
                     body: formData,
                     redirect: "follow"
-                })
-                    .then((response) => alert(response.status))
-                    .catch((e) => alert("err: "+e));
+                });
             });
         </script>
     
@@ -342,6 +339,37 @@ const DeleteAdminComp = () => {
 }
 
 
+const ModifyNewsComp = ({item, index}) => {
+    // "en-US", { timeZone: "Europe/London" }
+    // title, tags, html_body, thumbnail_path, pdfs_path, posted_on_utc_timezone
+
+    const submitDeletePost = async () => {
+        console.log("delete "+id);
+    }
+
+
+    return (
+        <View>
+            <Text>Id: {item.id}</Text>
+            <Text>Title: {item.title}</Text>
+            <Text>Tags: {item.tags}</Text>
+            <Text>html_body: {item.html_body}</Text>
+            <Text>thumbnail_path: {item.thumbnail_path}</Text>
+            <Text>pdfs_path: {item.pdfs_path}</Text>
+            <Text>Posted On: {new Date(item.posted_on_UTC_timezone).toLocaleString()}</Text>
+
+            <TouchableOpacity style={searchBarStyle.delete_post_view} onPress={submitDeletePost}>
+                <Text style={searchBarStyle.submit_text}>❌</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={searchBarStyle.delete_post_view} onPress={submitDeletePost}>
+                <Text style={searchBarStyle.submit_text}>✏️</Text>
+            </TouchableOpacity>
+        </View>
+    );
+}
+
+
 const SearchComp = () => {
     const submitHightDefault = 48;
     const filterHightDefault = 48;
@@ -352,15 +380,37 @@ const SearchComp = () => {
 
     const [SearchNewsText, setSearchNewsText] = useState('')
     const [FilterText, setFilterText] = useState('')
+ 
+    const [newsData, setNewsData] = useState()
 
     const submitSearchNews = async () => {
         if (SearchNewsText.length == 0) {
             return;
         }
         var data = await SearchNews(SearchNewsText, FilterText);
-
+        if (data.News == null) {
+            console.log("No news");
+            return;
+        }
+        setNewsData(data)
+        /*
+        var c = []
+        for (let i in data.News) {
+            // data.News[i]
+            let temp = data.News[i];
+            
+            //c.push(data.News[i]);
+            c.push(temp)
+        }
+        setArr(c);*/
     }
+//{arr.map((temp) => ModifyNewsComp(temp.id, temp.title, temp.tags, temp.html_body, temp))}
 
+/*
+<View style={AdminPanelStyle.form_box}>
+                {arr.map((temp) => ModifyNewsComp(temp.id, temp.id, temp.title, temp.tags, temp.html_body, 
+                    temp.thumbnail_path, temp.pdf_path, temp.posted_on_UTC_timezone))}
+            </View>*/
     return (
         <View style={{
             backgroundColor: "rgb(137, 190, 255)",
@@ -437,6 +487,14 @@ const SearchComp = () => {
                 />
             </View>
 
+            <FlatList
+                data={newsData}
+                renderItem={ModifyNewsComp}
+                keyExtractor={(item, index) => index.toString()}
+            />
+
+            
+
         </View >
     );
 }
@@ -455,11 +513,11 @@ export default function AdminPanelScreen() {
 
 
                 <AdminPostEditor />
-                <SearchComp />
-                
 
                 <View style={AdminPanelStyle.scroll_view_fix}></View>
             </ScrollView>
+            <View style={AdminPanelStyle.scroll_view_fix}></View>
+            <SearchComp />
 
         </SafeAreaView>
     );

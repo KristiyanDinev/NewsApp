@@ -13,7 +13,8 @@
 - Added `android:usesCleartextTraffic="true"` in `android/app/src/main/AndroidManifest.xml`. And created `android/app/src/main/res/xml/network_security_config.xml`
 
 ### TODO
-- Clean code.
+- Working with FlatList
+- Fix datetime in rendering news
 
 ### Software Requrements
 - NodeJS >= 18

@@ -36,7 +36,7 @@ export const CheckAdmin = async (pass) => {
         return res.status == 200;
 
     } catch (error) {
-        console.error(error)
+        return false;
     }
 }
 
@@ -52,7 +52,7 @@ export const AddAdmin = async (pass) => {
         return res.status == 200;
 
     } catch (error) {
-        console.error(error)
+        return false;
     }
 }
 
@@ -68,7 +68,7 @@ export const EditAdmin = async (oldpass, newpass) => {
         return res.status == 200;
 
     } catch (error) {
-        console.error(error)
+        return false;
     }
 }
 
@@ -85,22 +85,27 @@ export const DeleteAdmin = async (delpass) => {
         return res.status == 200;
 
     } catch (error) {
-        console.error(error)
+        return false;
     }
 }
 
 
 export const SearchNews = async (search, filter) => {
     try {
-        const res = await fetch(Host + newsEndpoint + "search?search="+search + "&tags=" + filter, {
-            method: "GET",
+        var formData  = new FormData();
+        formData.append('search', search);
+        formData.append('tags', filter);
+
+        const res = await fetch(Host + newsEndpoint + "search", {
+            method: "POST",
+            body: formData,
             redirect: redirectV,
         });
         // res.status == 200
-
-        console.log(res);
+        var data = await res.json();
+        return data;
 
     } catch (error) {
-        console.error(error)
+        return {};
     }
 }

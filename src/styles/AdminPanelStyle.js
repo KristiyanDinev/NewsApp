@@ -72,5 +72,14 @@ const adminPanelStyle = StyleSheet.create({
         resizeMode: 'contain',
         margin: 20,
     },
+
+
+
+    delete_post_view: {
+        backgroundColor: "rgb(226, 24, 24)",
+        borderRadius: 20,
+        padding: 20,
+        margin: 5
+    },
 });
 export default adminPanelStyle;
