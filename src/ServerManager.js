@@ -1,9 +1,5 @@
 
 
-const serverHeaders = {
-    'Content-Type': 'application/x-www-form-urlencoded',
-};
-
 const redirectV = 'follow';
 
 // multipart/form-data
@@ -17,35 +13,44 @@ const adminDeleteEndpoint = "/admin/remove";
 
 const newsEndpoint = "/news/";
 
-export var AdminPassword = "";
+export var Admin = {};
 
-export const setAdmin = (p) => {
-    AdminPassword = p;
+export const setAdmin = (a) => {
+    Admin = a;
 }
 
 
-export const CheckAdmin = async (pass) => {
+export const LoginAdmin = async (username, pass) => {
     try {
+        var formData = new FormData();
+        formData.append('adminPassword', pass);
+        formData.append('adminUsername', username);
+
         const res = await fetch(Host + adminLoginEndpoint , {
             method: "POST",
-            headers: serverHeaders,
-            body: "adminPassword=" + pass,
+            body: formData,
             redirect: redirectV,
         });
 
-        return res.status == 200;
+        var data = await res.json();
+        return data;
 
     } catch (error) {
-        return false;
+        return {};
     }
 }
 
-export const AddAdmin = async (pass) => {
+export const AddAdmin = async (pass, username) => {
     try {
+        var formData = new FormData();
+        formData.append('currentAdminUsername', Admin.username);
+        formData.append('currentAdminPassword', Admin.password);
+        formData.append('adminPassword', pass);
+        formData.append('adminUsername', username);
+
         const res = await fetch(Host + adminAddEndpoint, {
             method: "POST",
-            headers: serverHeaders,
-            body: "currentAdmin=" + AdminPassword +"&adminPassword="+pass,
+            body: formData,
             redirect: redirectV,
         });
 
@@ -56,12 +61,19 @@ export const AddAdmin = async (pass) => {
     }
 }
 
-export const EditAdmin = async (oldpass, newpass) => {
+export const EditAdmin = async (oldpass, old_username, newpass, new_username) => {
     try {
+        var formData = new FormData();
+        formData.append('currentAdminPassword', Admin.password);
+        formData.append('currentAdminUsername', Admin.username);
+        formData.append('oldAdminPassword', oldpass);
+        formData.append('oldAdminUsername', old_username);
+        formData.append('newAdminPassword', newpass);
+        formData.append('newAdminUsername', new_username);
+
         const res = await fetch(Host + adminEditEndpoint, {
             method: "POST",
-            headers: serverHeaders,
-            body: "currentAdmin=" + AdminPassword + "&oldAdminPassword=" + oldpass + "&newAdminPassword=" + newpass,
+            body: formData,
             redirect: redirectV,
         });
 
@@ -73,12 +85,17 @@ export const EditAdmin = async (oldpass, newpass) => {
 }
 
 
-export const DeleteAdmin = async (delpass) => {
+export const DeleteAdmin = async (delpass, delusername) => {
     try {
+        var formData = new FormData();
+        formData.append('currentAdminPassword', Admin.password);
+        formData.append('currentAdminUsername', Admin.username);
+        formData.append('adminPassword', delpass);
+        formData.append('adminUsername', delusername);
+
         const res = await fetch(Host + adminDeleteEndpoint, {
             method: "POST",
-            headers: serverHeaders,
-            body: "currentAdmin=" + AdminPassword + "&adminPassword=" + delpass,
+            body: formData,
             redirect: redirectV,
         });
 
@@ -107,5 +124,27 @@ export const SearchNews = async (search, filter) => {
 
     } catch (error) {
         return {};
+    }
+}
+
+export const DeleteNews = async (id, pdfs, thumbnail) => {
+    try {
+        var formData = new FormData();
+        formData.append('Id', id);
+        formData.append('PDFs', pdfs); // path
+        formData.append('Thumbnail', thumbnail); // path
+        formData.append('currentAdminUsername', Admin.username);
+        formData.append('currentAdminPassword', Admin.password);
+
+        const res = await fetch(Host + newsEndpoint + "delete", {
+            method: "POST",
+            body: formData,
+            redirect: redirectV,
+        });
+
+        return res.status == 200;
+
+    } catch (error) {
+        return false;
     }
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import adminLoginStyle from '../styles/AdminLoginStyle';
-import { CheckAdmin, setAdmin } from '../ServerManager';
+import { LoginAdmin, setAdmin } from '../ServerManager';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -10,21 +10,18 @@ export default function AdminLoginScreen() {
     const navigation = useNavigation();
 
     const [Password, setPassword] = useState('');
+    const [Username, setUsername] = useState('');
     const [PasswordStats, setPasswordStats] = useState('');
 
 
     const submitAdminLogin = async () => {
-        if (Password.includes("&") || Password.includes("=") || Password.includes("\\")) {
-            setPasswordStats("Invalid Characters.");
-            return;
-        }
-        var loged = await CheckAdmin(Password);
-        if (loged) {
-            setAdmin(Password);
+        var data = await LoginAdmin(Username, Password);
+        if (data !== null) {
+            setAdmin(data);
             navigation.navigate('AdminPanel');
 
         } else {
-            setPasswordStats("Invalid Password.");
+            setPasswordStats("Invalid Username or Password.");
         }
     }
 
@@ -34,6 +31,14 @@ export default function AdminLoginScreen() {
             <View style={adminLoginStyle.box}>
 
                 <Text style={adminLoginStyle.stats}>{PasswordStats}</Text>
+
+                <TextInput style={adminLoginStyle.input}
+                    onChangeText={(u) => {
+                        setUsername(u)
+                    }}
+                    value={Username}
+                    placeholder="Admin Username" />
+
                 <TextInput style={adminLoginStyle.input}
                     onChangeText={(p) => {
                         setPassword(p)

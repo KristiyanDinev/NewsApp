@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, Alert, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import AdminPanelStyle from '../styles/AdminPanelStyle'
-import { AddAdmin, EditAdmin, DeleteAdmin, Host, AdminPassword, SearchNews } from '../ServerManager';
+import { AddAdmin, EditAdmin, DeleteAdmin, Host, Admin, SearchNews } from '../ServerManager';
 import searchBarStyle from '../styles/SearchBarStyle';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import adminPanelStyle from '../styles/AdminPanelStyle';
 
 
 
@@ -136,19 +137,20 @@ const AdminPostEditor = () => {
             });
 
             let newsForm = document.getElementById("newsForm");
-            newsForm.addEventListener("submit", (e) => {
+            newsForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 
 
                 var formData  = new FormData();
-                formData.append('AdminPass', '`+ AdminPassword +`');
+                formData.append('AdminPass', '`+ Admin.password +`');
+                formData.append('AdminUsername', '`+ Admin.username +`');
                 formData.append('Title', document.getElementById("title").value);
                 formData.append('Tags', document.getElementById("tags").value);
                 formData.append('HTML_body', document.getElementById("example").value);
                 formData.append('PDFs', PDFsData);
                 formData.append('Thumbnail', ThumbnailFile);
 
-                fetch("`+Host+`/news", {
+                await fetch("`+Host+`/news", {
                     method: "POST",
                     body: formData,
                     redirect: "follow"
@@ -178,23 +180,29 @@ const AddAdminComp = () => {
     const [AddAdminWarning, setAddAdminWarning] = useState('')
     const [SuccessfulAddedAdmin, setSuccessfulAddedAdmin] = useState('')
     const [Password, setPassword] = useState('')
+    const [Username, setUsername] = useState('')
 
     const submitAddAdmin = async () => {
-        if (Password.includes("&") || Password.includes("=") || Password.includes("\\")) {
-            setSuccessfulAddedAdmin("");
-            setAddAdminWarning("Invalid Characters.");
-            return;
-        }
+        Alert.alert('Add Admin: ' + Username, 'Do you really want to add this admin?', [
+            {
+                text: 'No',
+                onPress: () => { },
+            },
+            {
+                text: 'Yes',
+                onPress: async () => {
+                    var isAdded = await AddAdmin(Password, Username);
+                    if (isAdded) {
+                        setSuccessfulAddedAdmin("Successfuly Added Admin");
+                        setAddAdminWarning("");
 
-        var isAdded = await AddAdmin(Password);
-        if (isAdded) {
-            setSuccessfulAddedAdmin("Successfuly Added Admin");
-            setAddAdminWarning("");
-
-        } else {
-            setSuccessfulAddedAdmin("");
-            setAddAdminWarning("Can't add this Admin");
-        }
+                    } else {
+                        setSuccessfulAddedAdmin("");
+                        setAddAdminWarning("Can't add this Admin");
+                    }
+                }
+            }
+        ]);
     }
 
     return (
@@ -203,18 +211,17 @@ const AddAdminComp = () => {
             <Text style={AdminPanelStyle.warning}>{AddAdminWarning}</Text>
             <Text style={AdminPanelStyle.success}>{SuccessfulAddedAdmin}</Text>
             <TextInput style={AdminPanelStyle.input}
+                onChangeText={(u) => {
+                    setUsername(u)
+                }}
+                value={Username}
+                placeholder="Username" />
+            <TextInput style={AdminPanelStyle.input}
                 onChangeText={(p) => {
-                    if (p.includes("&") || p.includes("=") || p.includes("\\")) {
-                        setSuccessfulAddedAdmin("");
-                        setWarning("No `& = \\` in password ");
-                        return;
-                    }
-
-                    setPassword(p.replace("&", "")
-                        .replace("=", "").replace("\\", ""))
+                    setPassword(p)
                 }}
                 value={Password}
-                placeholder="Add Password" />
+                placeholder="Password" />
 
             <TouchableOpacity style={AdminPanelStyle.submit} onPress={submitAddAdmin}>
                 <Text style={AdminPanelStyle.submit_text}>Add Admin</Text>
@@ -225,27 +232,34 @@ const AddAdminComp = () => {
 
 
 const EditAdminComp = () => {
-    const [EditedPassword, setEditedPassword] = useState('');
+    const [NewPassoword, setNewPassoword] = useState('');
+    const [NewUsername, setNewUsername] = useState('');
     const [OldPassword, setOldPassword] = useState('');
+    const [OldUsername, setOldUsername] = useState('');
     const [EditPasswordWarning, setEditPasswordWarning] = useState('')
     const [SuccessfulEditedPassword, setSuccessfulEditedPassword] = useState('')
 
     const submitEditAdmin = async () => {
-        if (EditedPassword.includes("&") || EditedPassword.includes("=") || EditedPassword.includes("\\")) {
-            setSuccessfulEditedPassword("");
-            setEditPasswordWarning("Invalid Characters.");
-            return;
-        }
+        Alert.alert('Edit Admin: ' + OldUsername, 'Do you really want to edit this admin?', [
+            {
+                text: 'No',
+                onPress: () => { },
+            },
+            {
+                text: 'Yes',
+                onPress: async () => {
+                    var isEdited = await EditAdmin(OldPassword, OldUsername, NewPassoword, NewUsername);
+                    if (isEdited) {
+                        setSuccessfulEditedPassword("Successfuly Edited Admin");
+                        setEditPasswordWarning("");
 
-        var isEdited = await EditAdmin(OldPassword, EditedPassword);
-        if (isEdited) {
-            setSuccessfulEditedPassword("Successfuly Edited Admin");
-            setEditPasswordWarning("");
-
-        } else {
-            setSuccessfulEditedPassword("");
-            setEditPasswordWarning("Can't edit this Admin");
-        }
+                    } else {
+                        setSuccessfulEditedPassword("");
+                        setEditPasswordWarning("Can't edit this Admin");
+                    }
+                }
+            }
+        ]);
     }
 
 
@@ -254,31 +268,35 @@ const EditAdminComp = () => {
             <Text style={AdminPanelStyle.form_title}>Edit Admin</Text>
             <Text style={AdminPanelStyle.warning}>{EditPasswordWarning}</Text>
             <Text style={AdminPanelStyle.success}>{SuccessfulEditedPassword}</Text>
+
+            <TextInput style={AdminPanelStyle.input}
+                onChangeText={(u) => {
+                    setOldUsername(u)
+                }}
+                value={OldUsername}
+                placeholder="Old Username" />
+
             <TextInput style={AdminPanelStyle.input}
                 onChangeText={(p) => {
-                    if (p.includes("&") || p.includes("=") || p.includes("\\")) {
-                        setSuccessfulEditedPassword("");
-                        setEditPasswordWarning("No `& = \\` in password ");
-                        return;
-                    }
-
-                    setOldPassword(p.replace("&", "")
-                        .replace("=", "").replace("\\", ""))
+                    setOldPassword(p)
                 }}
                 value={OldPassword}
                 placeholder="Old Password" />
 
+            <View style={{marginTop: 20}}></View>
+
+            <TextInput style={AdminPanelStyle.input}
+                onChangeText={(u) => {
+                    setNewUsername(u)
+                }}
+                value={NewUsername}
+                placeholder="New Username" />
+
             <TextInput style={AdminPanelStyle.input}
                 onChangeText={(p) => {
-                    if (p.includes("&") || p.includes("=") || p.includes("\\")) {
-                        setEditPasswordWarning("No `& = \\` in password ");
-                        return;
-                    }
-
-                    setEditedPassword(p.replace("&", "")
-                        .replace("=", "").replace("\\", ""))
+                    setNewPassoword(p)
                 }}
-                value={EditedPassword}
+                value={NewPassoword}
                 placeholder="New Password" />
 
             <TouchableOpacity style={AdminPanelStyle.submit} onPress={submitEditAdmin}>
@@ -291,25 +309,31 @@ const EditAdminComp = () => {
 
 const DeleteAdminComp = () => {
     const [DeletePassword, setDeletePassword] = useState('');
+    const [DeleteUsername, setDeleteUsername] = useState('');
     const [DeletedPasswordWarning, setDeletedPasswordWarning] = useState('')
     const [SuccessfulDeletedPassword, setSuccessfulDeletedPassword] = useState('')
 
     const submitDeleteAdmin = async () => {
-        if (DeletePassword.includes("&") || DeletePassword.includes("=") || DeletePassword.includes("\\")) {
-            setSuccessfulDeletedPassword("");
-            setDeletedPasswordWarning("Invalid Characters.");
-            return;
-        }
+        Alert.alert('Delete Admin: ' + DeleteUsername, 'Do you really want to delete this admin?', [
+            {
+                text: 'No',
+                onPress: () => { },
+            },
+            {
+                text: 'Yes',
+                onPress: async () => {
+                    var isDeleted = await DeleteAdmin(DeletePassword, DeleteUsername);
+                    if (isDeleted) {
+                        setSuccessfulDeletedPassword("Successfuly Deleted Admin");
+                        setDeletedPasswordWarning("");
 
-        var isDeleted = await DeleteAdmin(DeletePassword);
-        if (isDeleted) {
-            setSuccessfulDeletedPassword("Successfuly Deleted Admin");
-            setDeletedPasswordWarning("");
-
-        } else {
-            setSuccessfulDeletedPassword("");
-            setDeletedPasswordWarning("Can't delete this Admin");
-        }
+                    } else {
+                        setSuccessfulDeletedPassword("");
+                        setDeletedPasswordWarning("Can't delete this Admin");
+                    }
+                }
+            },
+        ]);
     }
 
     return (
@@ -318,18 +342,18 @@ const DeleteAdminComp = () => {
             <Text style={AdminPanelStyle.warning}>{DeletedPasswordWarning}</Text>
             <Text style={AdminPanelStyle.success}>{SuccessfulDeletedPassword}</Text>
             <TextInput style={AdminPanelStyle.input}
-                onChangeText={(p) => {
-                    if (p.includes("&") || p.includes("=") || p.includes("\\")) {
-                        setSuccessfulDeletedPassword("");
-                        setDeletedPasswordWarning("No `& = \\` in password ");
-                        return;
-                    }
+                onChangeText={(u) => {
+                    setDeleteUsername(u)
+                }}
+                value={DeleteUsername}
+                placeholder="Username" />
 
-                    setDeletePassword(p.replace("&", "")
-                        .replace("=", "").replace("\\", ""))
+            <TextInput style={AdminPanelStyle.input}
+                onChangeText={(p) => {
+                    setDeletePassword(p)
                 }}
                 value={DeletePassword}
-                placeholder="Delete Password" />
+                placeholder="Password" />
 
             <TouchableOpacity style={AdminPanelStyle.submit} onPress={submitDeleteAdmin}>
                 <Text style={AdminPanelStyle.submit_text}>Delete Admin</Text>
@@ -340,79 +364,126 @@ const DeleteAdminComp = () => {
 
 
 const ModifyNewsComp = ({item, index}) => {
-    // "en-US", { timeZone: "Europe/London" }
-    // title, tags, html_body, thumbnail_path, pdfs_path, posted_on_utc_timezone
+    // title, tags, htmL_body, thumbnail_path, pdF_path, posted_on_UTC_timezoned
 
     const submitDeletePost = async () => {
-        console.log("delete "+id);
+        Alert.alert('Delete: '+item.title, 'Do you really want to delete this post?', [
+            {
+                text: 'No',
+                onPress: () => {},
+            },
+            { 
+                text: 'Yes', 
+                onPress: () => {
+                    // TODO Send delete request
+                } 
+            },
+        ]);
     }
 
+    const submitEditPost = async () => {
+        console.log("edit " + item.id);
+    }
 
     return (
-        <View>
-            <Text>Id: {item.id}</Text>
-            <Text>Title: {item.title}</Text>
-            <Text>Tags: {item.tags}</Text>
-            <Text>html_body: {item.html_body}</Text>
-            <Text>thumbnail_path: {item.thumbnail_path}</Text>
-            <Text>pdfs_path: {item.pdfs_path}</Text>
-            <Text>Posted On: {new Date(item.posted_on_UTC_timezone).toLocaleString()}</Text>
+        <View style={adminPanelStyle.news_view}>
+            <Text style={adminPanelStyle.news_text}>Id: {item.id}</Text>
+            <Text style={adminPanelStyle.news_text}>Title: {item.title}</Text>
+            <Text style={adminPanelStyle.news_text}>Tags: {item.tags}</Text>
+            <Text style={adminPanelStyle.news_text}>HTML Body: {item.htmL_body.length > 50 ? 
+                item.htmL_body.slice(0, 50) + '...' : item.htmL_body}</Text>
+            <Text style={adminPanelStyle.news_text}>Thumbnail: {item.thumbnail_path}</Text>
+            <Text style={adminPanelStyle.news_text}>PDFs: {item.pdF_path}</Text>
+            <Text style={adminPanelStyle.news_text}>Posted On: {new Date(item.posted_on_UTC_timezoned)
+                .toLocaleString()}</Text>
 
-            <TouchableOpacity style={searchBarStyle.delete_post_view} onPress={submitDeletePost}>
-                <Text style={searchBarStyle.submit_text}>❌</Text>
+            <TouchableOpacity style={adminPanelStyle.delete_post_view} onPress={submitDeletePost}>
+                <Text style={adminPanelStyle.submit_text}>❌</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={searchBarStyle.delete_post_view} onPress={submitDeletePost}>
-                <Text style={searchBarStyle.submit_text}>✏️</Text>
+            <TouchableOpacity style={adminPanelStyle.edit_post_view} onPress={submitEditPost}>
+                <Text style={adminPanelStyle.submit_text}>✏️</Text>
             </TouchableOpacity>
         </View>
     );
 }
 
 
-const SearchComp = () => {
+
+export default function AdminPanelScreen() {
+
+/*
+{newsData.map((value, index, array) => ModifyNewsComp({value, index}))}
+<ScrollView contentContainerStyle={AdminPanelStyle.box} nestedScrollEnabled={true}>
+                <AddAdminComp  />
+
+                <EditAdminComp  />
+
+                <DeleteAdminComp  />
+
+
+                <AdminPostEditor />
+
+                <SearchComp />
+
+                <View style={AdminPanelStyle.scroll_view_fix}></View>
+            </ScrollView>
+            
+        
+            <FlatList style={{backgroundColor: "rgb(137, 190, 255)"
+    }}
+                data={newsData}
+                renderItem={ModifyNewsComp}
+                scrollEnabled={true}
+                ListHeaderComponent={() => (
+                    <View contentContainerStyle={AdminPanelStyle.box}>
+                        <AddAdminComp  />
+
+                        <EditAdminComp  />
+
+                        <DeleteAdminComp  />
+
+
+                        <AdminPostEditor />
+
+                        <SearchCompA />
+                    </View>
+                    
+
+                )}
+                ListFooterComponent={() => (
+                    <View style={AdminPanelStyle.scroll_view_fix}></View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />*/
+
+
     const submitHightDefault = 48;
     const filterHightDefault = 48;
     var maxH = 120;
-    var filterMaxH =  80;
+    var filterMaxH = 80;
     const [heightSubmit, setHeightSubmit] = useState(submitHightDefault);
     const [heightFilter, setHeightFilter] = useState(filterHightDefault);
 
     const [SearchNewsText, setSearchNewsText] = useState('')
     const [FilterText, setFilterText] = useState('')
- 
-    const [newsData, setNewsData] = useState()
+
+    const [newsData, setNewsData] = useState([])
 
     const submitSearchNews = async () => {
-        if (SearchNewsText.length == 0) {
+        if (SearchNewsText.length == 0 && FilterText.length == 0) {
             return;
         }
         var data = await SearchNews(SearchNewsText, FilterText);
         if (data.News == null) {
-            console.log("No news");
             return;
         }
-        setNewsData(data)
-        /*
-        var c = []
-        for (let i in data.News) {
-            // data.News[i]
-            let temp = data.News[i];
-            
-            //c.push(data.News[i]);
-            c.push(temp)
-        }
-        setArr(c);*/
+        setNewsData(data.News);
     }
-//{arr.map((temp) => ModifyNewsComp(temp.id, temp.title, temp.tags, temp.html_body, temp))}
 
-/*
-<View style={AdminPanelStyle.form_box}>
-                {arr.map((temp) => ModifyNewsComp(temp.id, temp.id, temp.title, temp.tags, temp.html_body, 
-                    temp.thumbnail_path, temp.pdf_path, temp.posted_on_UTC_timezone))}
-            </View>*/
-    return (
-        <View style={{
+
+    var SearchCompA = () => {
+        return (<View style={{
             backgroundColor: "rgb(137, 190, 255)",
             padding: 20,
             alignItems: 'center',
@@ -487,37 +558,44 @@ const SearchComp = () => {
                 />
             </View>
 
-            <FlatList
-                data={newsData}
-                renderItem={ModifyNewsComp}
-                keyExtractor={(item, index) => index.toString()}
-            />
-
-            
-
-        </View >
-    );
-}
+        </View >);
+    }
 
 
-export default function AdminPanelScreen() {
     return (
         <SafeAreaView>
             <TitleBar />
-            <ScrollView contentContainerStyle={AdminPanelStyle.box}>
-                <AddAdminComp  />
-
-                <EditAdminComp  />
-
-                <DeleteAdminComp  />
 
 
-                <AdminPostEditor />
+            <FlatList style={{
+                backgroundColor: "rgb(137, 190, 255)"
+            }}
+                data={newsData}
+                initialNumToRender={10}
+                renderItem={ModifyNewsComp}
+                scrollEnabled={true}
+                ListHeaderComponent={() => (
+                    <View contentContainerStyle={AdminPanelStyle.box}>
+                        <AddAdminComp />
 
-                <View style={AdminPanelStyle.scroll_view_fix}></View>
-            </ScrollView>
-            <View style={AdminPanelStyle.scroll_view_fix}></View>
-            <SearchComp />
+                        <EditAdminComp />
+
+                        <DeleteAdminComp />
+
+
+                        <AdminPostEditor />
+
+                        <SearchCompA />
+                    </View>
+
+
+                )}
+                ListFooterComponent={() => (
+                    <View style={AdminPanelStyle.scroll_view_fix}></View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
+            
 
         </SafeAreaView>
     );

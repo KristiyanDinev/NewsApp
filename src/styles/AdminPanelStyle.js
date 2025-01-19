@@ -66,7 +66,6 @@ const adminPanelStyle = StyleSheet.create({
 
     post_webview: {
         backgroundColor: "rgb(137, 190, 255)",
-        width: w,
         height: 900,
         alignItems: 'center',
         resizeMode: 'contain',
@@ -76,10 +75,29 @@ const adminPanelStyle = StyleSheet.create({
 
 
     delete_post_view: {
-        backgroundColor: "rgb(226, 24, 24)",
+        backgroundColor: "rgb(255, 140, 140)",
         borderRadius: 20,
-        padding: 20,
+        padding: 10,
         margin: 5
+    },
+
+    edit_post_view: {
+        backgroundColor: "rgb(44, 48, 255)",
+        borderRadius: 20,
+        padding: 10,
+        margin: 5
+    },
+
+    news_view: {
+        padding: 10,
+        margin: 10,
+        backgroundColor: "rgb(73, 158, 255)",
+        borderRadius: 20,
+    },
+
+    news_text: {
+        fontSize: 23,
+        padding: 10,
     },
 });
 export default adminPanelStyle;
