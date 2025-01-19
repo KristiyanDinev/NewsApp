@@ -133,8 +133,8 @@ export const DeleteNews = async (id, pdfs, thumbnail) => {
         formData.append('Id', id);
         formData.append('PDFs', pdfs); // path
         formData.append('Thumbnail', thumbnail); // path
-        formData.append('currentAdminUsername', Admin.username);
-        formData.append('currentAdminPassword', Admin.password);
+        formData.append('AdminUsername', Admin.username);
+        formData.append('AdminPass', Admin.password);
 
         const res = await fetch(Host + newsEndpoint + "delete", {
             method: "POST",
@@ -148,3 +148,5 @@ export const DeleteNews = async (id, pdfs, thumbnail) => {
         return false;
     }
 }
+
+

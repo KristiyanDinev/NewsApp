@@ -14,8 +14,7 @@
 
 ### TODO
 - add feedback on post news submit button
-- delete and edit posts in admin panel
-- Fix bug: admin when search the page goes back.
+- edit news in admin panel
 
 ### Software Requrements
 - NodeJS >= 18

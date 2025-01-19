@@ -2,27 +2,17 @@ import React, { useState } from 'react';
 import { View, Text, Alert, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import AdminPanelStyle from '../styles/AdminPanelStyle'
-import { AddAdmin, EditAdmin, DeleteAdmin, Host, Admin, SearchNews } from '../ServerManager';
+import { AddAdmin, EditAdmin, DeleteAdmin, Host, Admin, SearchNews, DeleteNews } from '../ServerManager';
 import searchBarStyle from '../styles/SearchBarStyle';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import adminPanelStyle from '../styles/AdminPanelStyle';
+import { useNavigation } from '@react-navigation/native';
 
 
 
 const AdminPostEditor = () => {
-    const handleWebViewNavigationStateChange = (newNavState) => {
-        // newNavState looks something like this:
-        // {
-        //   url?: string;
-        //   title?: string;
-        //   loading?: boolean;
-        //   canGoBack?: boolean;
-        //   canGoForward?: boolean;
-        // }
-        const { url } = newNavState;
-        if (!url) return;
-    };
+
 
 
     const htmlEditor = `
@@ -150,12 +140,14 @@ const AdminPostEditor = () => {
                 formData.append('PDFs', PDFsData);
                 formData.append('Thumbnail', ThumbnailFile);
 
-                await fetch("`+Host+`/news", {
+                fetch("`+Host+`/news", {
                     method: "POST",
                     body: formData,
                     redirect: "follow"
                 });
+
             });
+            
         </script>
     
     `;
@@ -170,7 +162,6 @@ const AdminPostEditor = () => {
             startInLoadingState={true}
             scalesPageToFit={false}
             scrollEnabled={true}
-            onNavigationStateChange={handleWebViewNavigationStateChange}
         />
     );
 }
@@ -363,50 +354,6 @@ const DeleteAdminComp = () => {
 }
 
 
-const ModifyNewsComp = ({item, index}) => {
-    // title, tags, htmL_body, thumbnail_path, pdF_path, posted_on_UTC_timezoned
-
-    const submitDeletePost = async () => {
-        Alert.alert('Delete: '+item.title, 'Do you really want to delete this post?', [
-            {
-                text: 'No',
-                onPress: () => {},
-            },
-            { 
-                text: 'Yes', 
-                onPress: () => {
-                    // TODO Send delete request
-                } 
-            },
-        ]);
-    }
-
-    const submitEditPost = async () => {
-        console.log("edit " + item.id);
-    }
-
-    return (
-        <View style={adminPanelStyle.news_view}>
-            <Text style={adminPanelStyle.news_text}>Id: {item.id}</Text>
-            <Text style={adminPanelStyle.news_text}>Title: {item.title}</Text>
-            <Text style={adminPanelStyle.news_text}>Tags: {item.tags}</Text>
-            <Text style={adminPanelStyle.news_text}>HTML Body: {item.htmL_body.length > 50 ? 
-                item.htmL_body.slice(0, 50) + '...' : item.htmL_body}</Text>
-            <Text style={adminPanelStyle.news_text}>Thumbnail: {item.thumbnail_path}</Text>
-            <Text style={adminPanelStyle.news_text}>PDFs: {item.pdF_path}</Text>
-            <Text style={adminPanelStyle.news_text}>Posted On: {new Date(item.posted_on_UTC_timezoned)
-                .toLocaleString()}</Text>
-
-            <TouchableOpacity style={adminPanelStyle.delete_post_view} onPress={submitDeletePost}>
-                <Text style={adminPanelStyle.submit_text}>❌</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={adminPanelStyle.edit_post_view} onPress={submitEditPost}>
-                <Text style={adminPanelStyle.submit_text}>✏️</Text>
-            </TouchableOpacity>
-        </View>
-    );
-}
 
 
 
@@ -457,6 +404,7 @@ export default function AdminPanelScreen() {
                 keyExtractor={(item, index) => index.toString()}
             />*/
 
+    const navigation = useNavigation();
 
     const submitHightDefault = 48;
     const filterHightDefault = 48;
@@ -562,6 +510,59 @@ export default function AdminPanelScreen() {
     }
 
 
+    const ModifyNewsComp = ({ item, index }) => {
+        // title, tags, htmL_body, thumbnail_path, pdF_path, posted_on_UTC_timezoned
+
+        const submitDeletePost = async () => {
+            Alert.alert('Delete: ' + item.title, 'Do you really want to delete this post?', [
+                {
+                    text: 'No',
+                    onPress: () => { },
+                },
+                {
+                    text: 'Yes',
+                    onPress: async () => {
+                        // TODO Send delete request
+                        var isDeleted = await DeleteNews(item.id, item.pdF_path, item.thumbnail_path);
+                        Alert.alert(isDeleted ? "Deleted!: " + item.title : "Couldn't delete: " + item.title, "", [{
+                            text: "Ok",
+                            onPress: () => { },
+                        }]);
+                    }
+                },
+            ]);
+        }
+
+        const submitEditPost = async () => {
+            navigation.navigate('AdminEditNews', { news: item });
+        }
+
+
+        return (
+            <View style={adminPanelStyle.news_view}>
+                <Text style={adminPanelStyle.news_text}>Id: {item.id}</Text>
+                <Text style={adminPanelStyle.news_text}>Title: {item.title}</Text>
+                <Text style={adminPanelStyle.news_text}>Tags: {item.tags}</Text>
+                <Text style={adminPanelStyle.news_text}>HTML Body: {item.htmL_body.length > 50 ?
+                    item.htmL_body.slice(0, 50) + '...' : item.htmL_body}</Text>
+                <Text style={adminPanelStyle.news_text}>Thumbnail: {item.thumbnail_path}</Text>
+                <Text style={adminPanelStyle.news_text}>PDFs: {item.pdF_path}</Text>
+                <Text style={adminPanelStyle.news_text}>Posted On: {new Date(item.posted_on_UTC_timezoned)
+                    .toLocaleString()}</Text>
+                <Text style={adminPanelStyle.news_text}>Posted by Admin: {item.posted_by_Admin_username}</Text>
+
+                <TouchableOpacity style={adminPanelStyle.delete_post_view} onPress={submitDeletePost}>
+                    <Text style={adminPanelStyle.submit_text}>❌</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={adminPanelStyle.edit_post_view} onPress={submitEditPost}>
+                    <Text style={adminPanelStyle.submit_text}>✏️</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+
     return (
         <SafeAreaView>
             <TitleBar />
@@ -571,20 +572,14 @@ export default function AdminPanelScreen() {
                 backgroundColor: "rgb(137, 190, 255)"
             }}
                 data={newsData}
-                initialNumToRender={10}
                 renderItem={ModifyNewsComp}
                 scrollEnabled={true}
                 ListHeaderComponent={() => (
                     <View contentContainerStyle={AdminPanelStyle.box}>
                         <AddAdminComp />
-
                         <EditAdminComp />
-
                         <DeleteAdminComp />
-
-
                         <AdminPostEditor />
-
                         <SearchCompA />
                     </View>
 

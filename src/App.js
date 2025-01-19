@@ -9,6 +9,7 @@ import ContactUsScreen from './screens/ContactUsScreen';
 import AdminLoginScreen from './screens/AdminLoginScreen';
 import SavedNewsScreen from './screens/SavedNewsScreen';
 import AdminPanelScreen from './screens/AdminPanelScreen';
+import AdminNewsEditScreen from './screens/AdminNewsEditScreen';
 
 
 /*
@@ -27,16 +28,14 @@ const RootStack = createNativeStackNavigator({
     title: ''
   },
   screens: {
-    Home: {
-      screen: HomeScreen,
-      options: {},
-    },
+    Home: HomeScreen,
     Options: OptionsScreen,
     AboutApp: AboutAppScreen,
     ContactUs: ContactUsScreen,
     AdminLogin: AdminLoginScreen,
     SavedNews: SavedNewsScreen,
     AdminPanel: AdminPanelScreen,
+    AdminEditNews: AdminNewsEditScreen,
   },
 });
 
