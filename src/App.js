@@ -10,6 +10,7 @@ import AdminLoginScreen from './screens/AdminLoginScreen';
 import SavedNewsScreen from './screens/SavedNewsScreen';
 import AdminPanelScreen from './screens/AdminPanelScreen';
 import AdminNewsEditScreen from './screens/AdminNewsEditScreen';
+import SearchScreen from './screens/SearchScreen';
 
 
 /*
@@ -36,6 +37,7 @@ const RootStack = createNativeStackNavigator({
     SavedNews: SavedNewsScreen,
     AdminPanel: AdminPanelScreen,
     AdminEditNews: AdminNewsEditScreen,
+    Search: SearchScreen,
   },
 });
 

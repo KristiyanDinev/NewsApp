@@ -3,7 +3,6 @@ import { View, Text, Alert, TextInput, TouchableOpacity, FlatList } from 'react-
 import TitleBar from '../components/TitleBar';
 import AdminPanelStyle from '../styles/AdminPanelStyle'
 import { AddAdmin, EditAdmin, DeleteAdmin, Host, Admin, SearchNews, DeleteNews } from '../ServerManager';
-import searchBarStyle from '../styles/SearchBarStyle';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import adminPanelStyle from '../styles/AdminPanelStyle';
@@ -69,10 +68,10 @@ const AdminPostEditor = () => {
 			<lable>Body (Using SCEditor under MIT)</lable>
 			<textarea name="HTML_body" id="example" rows="20" cols="50"></textarea>
 			<hr>
-			<lable>Select Thumbnail</lable>
+			<lable>Select Thumbnail (no \\ or / in the file name)</lable>
 			<input name="ThumbnailFile" type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
 			<hr>
-			<lable>Select PDFs</lable>
+			<lable>Select PDFs (no \\ or / in the file name)</lable>
 			<input name="PDFs" type="file" accept="application/pdf" id="p" multiple>
 			<hr>
 			<input type="submit" value="Submit">
@@ -201,6 +200,7 @@ const AddAdminComp = () => {
             <Text style={AdminPanelStyle.form_title}>Add Admin</Text>
             <Text style={AdminPanelStyle.warning}>{AddAdminWarning}</Text>
             <Text style={AdminPanelStyle.success}>{SuccessfulAddedAdmin}</Text>
+            <Text>Every ' in the username will be replaced with "</Text>
             <TextInput style={AdminPanelStyle.input}
                 onChangeText={(u) => {
                     setUsername(u)
@@ -431,82 +431,7 @@ export default function AdminPanelScreen() {
 
 
     var SearchCompA = () => {
-        return (<View style={{
-            backgroundColor: "rgb(137, 190, 255)",
-            padding: 20,
-            alignItems: 'center',
-        }}>
-            <View style={{
-
-                height: Math.max(submitHightDefault, heightSubmit),
-                borderColor: "rgb(51, 145, 253)",
-                borderRadius: 20,
-                borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
-                borderWidth: 3,
-                borderStyle: 'solid',
-                backgroundColor: "rgb(234, 243, 253)",
-                width: 170,
-                maxWidth: 170,
-
-            }}>
-                <TextInput style={searchBarStyle.search_text}
-                    value={SearchNewsText}
-                    multiline={true}
-                    onChangeText={setSearchNewsText}
-                    placeholder="Search anything..."
-                    onContentSizeChange={(event) => {
-                        var newH = event.nativeEvent.contentSize.height;
-                        if (newH >= maxH) {
-                            setHeightSubmit(maxH);
-                            return;
-                        }
-                        setHeightSubmit(newH);
-                    }}
-                />
-
-                <TouchableOpacity style={searchBarStyle.submit} onPress={submitSearchNews}>
-                    <Text style={searchBarStyle.submit_text}>🔍</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={{
-                alignItems: 'center',
-                marginTop: heightSubmit
-            }}>
-                <Text style={searchBarStyle.filter_text}>
-                    Filter: Enter tags to filter your result. Spaces are allowed. Seperate them by ;
-                </Text>
-                <TextInput style={{
-                    height: Math.max(filterHightDefault, heightFilter),
-                    borderColor: "rgb(104, 131, 165)",
-                    borderRadius: 5,
-                    borderWidth: 3,
-                    borderStyle: 'solid',
-                    backgroundColor: "rgb(236, 236, 236)",
-                    width: 200,
-                    maxWidth: 200,
-                    marginTop: 15,
-                    maxHeight: filterMaxH,
-                    textAlign: 'left',
-                    fontSize: 15,
-                }}
-                    value={FilterText}
-                    multiline={true}
-                    onChangeText={setFilterText}
-                    placeholder="Ex: news;bible study;posts"
-                    onContentSizeChange={(event) => {
-                        var newH = event.nativeEvent.contentSize.height;
-                        if (newH >= filterMaxH) {
-                            setHeightFilter(filterMaxH);
-                            return;
-                        }
-                        setHeightFilter(newH);
-                    }}
-                />
-            </View>
-
-        </View >);
+        return ();
     }
 
 

@@ -15,6 +15,7 @@
 ### TODO
 - add feedback on post news submit button
 - edit news in admin panel
+- Add warning for post authors search filter: Every ' will be replaced with "
 
 ### Software Requrements
 - NodeJS >= 18
