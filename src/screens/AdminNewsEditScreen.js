@@ -4,7 +4,7 @@ import TitleBar from '../components/TitleBar';
 import adminNewsEditStyle from '../styles/AdminNewsEditStyle'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
-import { Host, Admin } from '../ServerManager';
+import {EditNews} from '../ServerManager';
 
 export default function AdminNewsEditScreen() {
     const navigation = useNavigation();
@@ -12,7 +12,8 @@ export default function AdminNewsEditScreen() {
     const { news } = route.params;
     console.log(news);
     // {"htmL_body": "c", "id": 7, "pdF_path": "", "posted_by_Admin_username": null, "posted_on_UTC_timezoned": "2025-01-19T14:13:00", "tags": "3", "thumbnail_path": "", "title": "c"}
-    const htmlEditor = `
+    const htmlEditor =
+      `
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sceditor@3/minified/themes/default.min.css" id="theme-style" />
     
      <script src="https://cdn.jsdelivr.net/npm/sceditor@3/minified/sceditor.min.js"></script>
@@ -56,15 +57,23 @@ export default function AdminNewsEditScreen() {
             </style>
     
     <center>
+        <h3>Editing Post</h3>
+
             <form id="newsForm">
                 <lable>Title:</lable>
-                <input name="Title" type="text" placeholder="Post Title" id="title" value="`+news.title+`">
+                <input name="Title" type="text" placeholder="Post Title" id="title" value="` +
+      news.title +
+      `">
                 <hr>
-                <lable>(' will be replaced by ") Tags:</lable>
-                <input name="Tags" type="text" placeholder="post;bible study;news" id="tags" value="`+news.tags+`">
+                <lable>Tags:</lable>
+                <input name="Tags" type="text" placeholder="post;bible study;news" id="tags" value="` +
+      news.tags +
+      `">
                 <hr>
                 <lable>Body (Using SCEditor under MIT)</lable>
-                <textarea name="HTML_body" id="example" rows="20" cols="50">`+news.htmL_body+`</textarea>
+                <textarea name="HTML_body" id="example" rows="20" cols="50">` +
+      news.htmL_body +
+      `</textarea>
                 <hr>
                 <lable>Select Thumbnail</lable>
                 <input name="ThumbnailFile" type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
@@ -97,7 +106,7 @@ export default function AdminNewsEditScreen() {
                         ThumbnailReader.onload = function() {
     
                             let array1 = new Uint8Array(ThumbnailReader.result);
-                            ThumbnailFile += array1;
+                            ThumbnailFile += btoa(array1);
     
                         }
                         ThumbnailReader.readAsArrayBuffer(targetFile);
@@ -116,7 +125,7 @@ export default function AdminNewsEditScreen() {
                         PDFreader.onload = function() {
     
                             let array2 = new Uint8Array(PDFreader.result);
-                            PDFsData += array2 + ';';
+                            PDFsData += btoa(array2) + ';';
     
                         }
                         PDFreader.readAsArrayBuffer(f);
@@ -127,44 +136,64 @@ export default function AdminNewsEditScreen() {
                 newsForm.addEventListener("submit", async (e) => {
                     e.preventDefault();
                     
-    
-                    var formData  = new FormData();
-                    formData.append('AdminPass', '`+ Admin.password +`');
-                    formData.append('AdminUsername', '`+ Admin.username +`');
-                    formData.append('Title', document.getElementById("title").value);
-                    formData.append('Tags', document.getElementById("tags").value);
-                    formData.append('HTML_body', document.getElementById("example").value);
-                    formData.append('PDFs', PDFsData);
-                    formData.append('Thumbnail', ThumbnailFile);
-    
-                    fetch("`+ Host +`/news/edit", {
-                        method: "POST",
-                        body: formData,
-                        redirect: "follow"
-                    });
-    
+                    window.ReactNativeWebView.postMessage('0'+document.getElementById("title").value);
+                    window.ReactNativeWebView.postMessage('1'+document.getElementById("tags").value);
+                    window.ReactNativeWebView.postMessage('2'+document.getElementById("example").value);
+                    window.ReactNativeWebView.postMessage('3'+PDFsData);
+                    window.ReactNativeWebView.postMessage('4'+ThumbnailFile);
+
+                    window.ReactNativeWebView.postMessage('-');
                 });
                 
             </script>
         
         `;
 
+    var EditData = [];
+    const getHTML_Data = async (e) => {
+            const eventValue = e.nativeEvent.data;
+            if (
+              eventValue == '-' &&
+              PostData.length == 5 &&
+              EditData[0].length > 0 &&
+              EditData[2].length > 0
+            ) {
+              var isEdited = await EditNews(EditData);
+              Alert.alert(
+                isEdited ? 'Edited: ' + EditData[0] : "Can't edit this post",
+                '',
+                [
+                  {
+                    text: 'Ok',
+                    onPress: () => {},
+                  },
+                ],
+              );
+              return;
+            }
+            const i = Number(eventValue[0]);
+            const value = eventValue.slice(1);
+            EditData[i] = value;
+        }
+
+
     return (
-        <View>
-            <TitleBar />
-            <ScrollView contentContainerStyle={adminNewsEditStyle.box}>
-                <WebView
-                    source={{ html: htmlEditor }}
-                    style={adminNewsEditStyle.webview}
-                    originWhitelist={["*"]}
-                    javaScriptEnabled={true}
-                    domStorageEnabled={true}
-                    startInLoadingState={true}
-                    scalesPageToFit={false}
-                    scrollEnabled={true}
-                />
-            </ScrollView>
-        </View>
+      <View>
+        <TitleBar />
+        <ScrollView contentContainerStyle={adminNewsEditStyle.box}>
+          <WebView
+            source={{html: htmlEditor}}
+            style={adminNewsEditStyle.webview}
+            originWhitelist={['*']}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            startInLoadingState={true}
+            scalesPageToFit={false}
+            scrollEnabled={true}
+            onMessage={getHTML_Data}
+          />
+        </ScrollView>
+      </View>
     );
 }
 

@@ -10,7 +10,7 @@ const searchStyle = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: w,
-        height: h,
+        height: 1260,
     },
 
     search_box: {

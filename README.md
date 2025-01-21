@@ -13,9 +13,9 @@
 - Added `android:usesCleartextTraffic="true"` in `android/app/src/main/AndroidManifest.xml`. And created `android/app/src/main/res/xml/network_security_config.xml`
 
 ### TODO
-- add feedback on post news submit button
 - edit news in admin panel
-- Add warning for post authors search filter: Every ' will be replaced with "
+- Turn html in textarea into bbcode
+- Route the search results for user
 
 ### Software Requrements
 - NodeJS >= 18

@@ -107,11 +107,14 @@ export const DeleteAdmin = async (delpass, delusername) => {
 }
 
 
-export const SearchNews = async (search, filter) => {
+export const SearchNews = async (search, filter, authors, page, amount) => {
     try {
         var formData  = new FormData();
         formData.append('search', search);
         formData.append('tags', filter);
+        formData.append('post_authors', authors);
+        formData.append('page', page);
+        formData.append('amount', amount);
 
         const res = await fetch(Host + newsEndpoint + "search", {
             method: "POST",
@@ -150,3 +153,51 @@ export const DeleteNews = async (id, pdfs, thumbnail) => {
 }
 
 
+export const PostNews = async (data) => {
+    try {
+        var formData = new FormData();
+        formData.append('AdminPass', Admin.password);
+        formData.append('AdminUsername', Admin.username);
+        formData.append('Title', data[0]);
+        formData.append('Tags', data[1]);
+        formData.append('HTML_body', data[2]);
+        formData.append('PDFs', data[3]);
+        formData.append('Thumbnail', data[4]);
+
+        const res = await fetch(Host + newsEndpoint, {
+            method: 'POST',
+            body: formData,
+            redirect: redirectV,
+        });
+
+
+        return res.status == 200;
+
+    } catch (error) {
+      return false;
+    }
+}
+
+export const EditNews = async (data) => {
+  try {
+    var formData = new FormData();
+    formData.append('AdminPass', Admin.password);
+    formData.append('AdminUsername', Admin.username);
+    formData.append('Title', data[0]);
+    formData.append('Tags', data[1]);
+    formData.append('HTML_body', data[2]);
+    formData.append('PDFs', data[3]);
+    formData.append('Thumbnail', data[4]);
+
+    const res = await fetch(Host + newsEndpoint + 'edit', {
+      method: 'POST',
+      body: formData,
+      redirect: redirectV,
+    });
+
+    return res.status == 200;
+    
+  } catch (error) {
+    return false;
+  }
+};

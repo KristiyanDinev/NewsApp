@@ -7,8 +7,6 @@ const h = Dimensions.get('window').height;
 const adminPanelStyle = StyleSheet.create({
     box: {
         backgroundColor: "rgb(137, 190, 255)",
-        alignItems: 'center',
-        justifyContent: 'center',
         width: w,
     },
 

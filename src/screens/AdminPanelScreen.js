@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, Alert, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, Alert, TextInput, TouchableOpacity, FlatList , ScrollView} from 'react-native';
 import TitleBar from '../components/TitleBar';
 import AdminPanelStyle from '../styles/AdminPanelStyle'
-import { AddAdmin, EditAdmin, DeleteAdmin, Host, Admin, SearchNews, DeleteNews } from '../ServerManager';
+import {
+  AddAdmin,
+  EditAdmin,
+  DeleteAdmin,
+  SearchNews,
+  DeleteNews,
+  PostNews,
+} from '../ServerManager';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import adminPanelStyle from '../styles/AdminPanelStyle';
 import { useNavigation } from '@react-navigation/native';
-
+import searchStyle from '../styles/SearchStyle'
 
 
 const AdminPostEditor = () => {
-
-
-
-    const htmlEditor = `
+  const htmlEditor =
+    `
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sceditor@3/minified/themes/default.min.css" id="theme-style" />
 
  <script src="https://cdn.jsdelivr.net/npm/sceditor@3/minified/sceditor.min.js"></script>
@@ -58,11 +63,12 @@ const AdminPostEditor = () => {
         </style>
 
 <center>
+        
         <form id="newsForm">
 			<lable>Title:</lable>
 			<input name="Title" type="text" placeholder="Post Title" id="title">
 			<hr>
-			<lable>(' will be replaced by ") Tags:</lable>
+			<lable>Tags:</lable>
 			<input name="Tags" type="text" placeholder="post;bible study;news" id="tags">
 			<hr>
 			<lable>Body (Using SCEditor under MIT)</lable>
@@ -99,7 +105,7 @@ const AdminPostEditor = () => {
                     ThumbnailReader.onload = function() {
 
                         let array1 = new Uint8Array(ThumbnailReader.result);
-                        ThumbnailFile += array1;
+                        ThumbnailFile += btoa(array1);
 
                     }
                     ThumbnailReader.readAsArrayBuffer(targetFile);
@@ -118,7 +124,7 @@ const AdminPostEditor = () => {
                     PDFreader.onload = function() {
 
                         let array2 = new Uint8Array(PDFreader.result);
-                        PDFsData += array2 + ';';
+                        PDFsData += btoa(array2) + ';';
 
                     }
                     PDFreader.readAsArrayBuffer(f);
@@ -129,21 +135,13 @@ const AdminPostEditor = () => {
             newsForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 
+                window.ReactNativeWebView.postMessage('0'+document.getElementById("title").value);
+                window.ReactNativeWebView.postMessage('1'+document.getElementById("tags").value);
+                window.ReactNativeWebView.postMessage('2'+document.getElementById("example").value);
+                window.ReactNativeWebView.postMessage('3'+PDFsData);
+                window.ReactNativeWebView.postMessage('4'+ThumbnailFile);
 
-                var formData  = new FormData();
-                formData.append('AdminPass', '`+ Admin.password +`');
-                formData.append('AdminUsername', '`+ Admin.username +`');
-                formData.append('Title', document.getElementById("title").value);
-                formData.append('Tags', document.getElementById("tags").value);
-                formData.append('HTML_body', document.getElementById("example").value);
-                formData.append('PDFs', PDFsData);
-                formData.append('Thumbnail', ThumbnailFile);
-
-                fetch("`+Host+`/news", {
-                    method: "POST",
-                    body: formData,
-                    redirect: "follow"
-                });
+                window.ReactNativeWebView.postMessage('-');
 
             });
             
@@ -151,17 +149,45 @@ const AdminPostEditor = () => {
     
     `;
 
+    var PostData = [];
+    const getHTML_Data = async (e) => {
+        const eventValue = e.nativeEvent.data;
+        if (
+          eventValue == '-' &&
+          PostData.length == 5 &&
+          PostData[0].length > 0 &&
+          PostData[2].length > 0
+        ) {
+          var isPosted = await PostNews(PostData);
+          Alert.alert(
+            isPosted ? 'Posted: ' + PostData[0] : "Can't post this post",
+            '',
+            [
+              {
+                text: 'Ok',
+                onPress: () => {},
+              },
+            ],
+          );
+          return;
+        }
+        const i = Number(eventValue[0]);
+        const value = eventValue.slice(1);
+        PostData[i] = value;
+    }
+
     return (
-        <WebView
-            source={{ html: htmlEditor }}
-            style={AdminPanelStyle.post_webview}
-            originWhitelist={["*"]}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            startInLoadingState={true}
-            scalesPageToFit={false}
-            scrollEnabled={true}
-        />
+      <WebView
+        source={{html: htmlEditor}}
+        style={AdminPanelStyle.post_webview}
+        originWhitelist={['*']}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        startInLoadingState={true}
+        scalesPageToFit={false}
+        scrollEnabled={true}
+        onMessage={getHTML_Data}
+      />
     );
 }
 
@@ -200,7 +226,6 @@ const AddAdminComp = () => {
             <Text style={AdminPanelStyle.form_title}>Add Admin</Text>
             <Text style={AdminPanelStyle.warning}>{AddAdminWarning}</Text>
             <Text style={AdminPanelStyle.success}>{SuccessfulAddedAdmin}</Text>
-            <Text>Every ' in the username will be replaced with "</Text>
             <TextInput style={AdminPanelStyle.input}
                 onChangeText={(u) => {
                     setUsername(u)
@@ -355,11 +380,8 @@ const DeleteAdminComp = () => {
 
 
 
-
-
 export default function AdminPanelScreen() {
-
-/*
+  /*
 {newsData.map((value, index, array) => ModifyNewsComp({value, index}))}
 <ScrollView contentContainerStyle={AdminPanelStyle.box} nestedScrollEnabled={true}>
                 <AddAdminComp  />
@@ -404,120 +426,181 @@ export default function AdminPanelScreen() {
                 keyExtractor={(item, index) => index.toString()}
             />*/
 
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
-    const submitHightDefault = 48;
-    const filterHightDefault = 48;
-    var maxH = 120;
-    var filterMaxH = 80;
-    const [heightSubmit, setHeightSubmit] = useState(submitHightDefault);
-    const [heightFilter, setHeightFilter] = useState(filterHightDefault);
+  const [newsData, setNewsData] = useState([]);
 
-    const [SearchNewsText, setSearchNewsText] = useState('')
-    const [FilterText, setFilterText] = useState('')
-
-    const [newsData, setNewsData] = useState([])
-
-    const submitSearchNews = async () => {
-        if (SearchNewsText.length == 0 && FilterText.length == 0) {
-            return;
-        }
-        var data = await SearchNews(SearchNewsText, FilterText);
-        if (data.News == null) {
-            return;
-        }
-        setNewsData(data.News);
+  const submitSearch = async (text, filterText, authorsText) => {
+    if (text.length == 0 && filterText.length == 0 && authorsText.length == 0) {
+      return;
     }
-
-
-    var SearchCompA = () => {
-        return ();
+    var data = await SearchNews(text, filterText, authorsText, 1, 10);
+    if (data.News == null) {
+      return;
     }
+    setNewsData(data.News);
+  };
 
-
-    const ModifyNewsComp = ({ item, index }) => {
-        // title, tags, htmL_body, thumbnail_path, pdF_path, posted_on_UTC_timezoned
-
-        const submitDeletePost = async () => {
-            Alert.alert('Delete: ' + item.title, 'Do you really want to delete this post?', [
-                {
-                    text: 'No',
-                    onPress: () => { },
-                },
-                {
-                    text: 'Yes',
-                    onPress: async () => {
-                        // TODO Send delete request
-                        var isDeleted = await DeleteNews(item.id, item.pdF_path, item.thumbnail_path);
-                        Alert.alert(isDeleted ? "Deleted!: " + item.title : "Couldn't delete: " + item.title, "", [{
-                            text: "Ok",
-                            onPress: () => { },
-                        }]);
-                    }
-                },
-            ]);
-        }
-
-        const submitEditPost = async () => {
-            navigation.navigate('AdminEditNews', { news: item });
-        }
-
-
-        return (
-            <View style={adminPanelStyle.news_view}>
-                <Text style={adminPanelStyle.news_text}>Id: {item.id}</Text>
-                <Text style={adminPanelStyle.news_text}>Title: {item.title}</Text>
-                <Text style={adminPanelStyle.news_text}>Tags: {item.tags}</Text>
-                <Text style={adminPanelStyle.news_text}>HTML Body: {item.htmL_body.length > 50 ?
-                    item.htmL_body.slice(0, 50) + '...' : item.htmL_body}</Text>
-                <Text style={adminPanelStyle.news_text}>Thumbnail: {item.thumbnail_path}</Text>
-                <Text style={adminPanelStyle.news_text}>PDFs: {item.pdF_path}</Text>
-                <Text style={adminPanelStyle.news_text}>Posted On: {new Date(item.posted_on_UTC_timezoned)
-                    .toLocaleString()}</Text>
-                <Text style={adminPanelStyle.news_text}>Posted by Admin: {item.posted_by_Admin_username}</Text>
-
-                <TouchableOpacity style={adminPanelStyle.delete_post_view} onPress={submitDeletePost}>
-                    <Text style={adminPanelStyle.submit_text}>❌</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={adminPanelStyle.edit_post_view} onPress={submitEditPost}>
-                    <Text style={adminPanelStyle.submit_text}>✏️</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
-
+  const SeachC = () => {
+    const [text, setText] = useState('');
+    const [filterText, setFilterText] = useState('');
+    const [authorsText, setAuthorsText] = useState('');
 
     return (
-        <SafeAreaView>
-            <TitleBar />
+      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <View style={searchStyle.search_box}>
+          <TextInput
+            style={searchStyle.search_text}
+            value={text}
+            multiline={true}
+            onChangeText={setText}
+            placeholder="Search anything..."
+          />
 
+          <TouchableOpacity style={searchStyle.submit} onPress={async () => {
+            await submitSearch(text, filterText, authorsText);
+          }}>
+            <Text style={searchStyle.submit_text}>🔍</Text>
+          </TouchableOpacity>
+        </View>
 
-            <FlatList style={{
-                backgroundColor: "rgb(137, 190, 255)"
-            }}
-                data={newsData}
-                renderItem={ModifyNewsComp}
-                scrollEnabled={true}
-                ListHeaderComponent={() => (
-                    <View contentContainerStyle={AdminPanelStyle.box}>
-                        <AddAdminComp />
-                        <EditAdminComp />
-                        <DeleteAdminComp />
-                        <AdminPostEditor />
-                        <SearchCompA />
-                    </View>
+        <View style={searchStyle.filter_box}>
+          <Text style={searchStyle.filter_text}>
+            Filter: Enter tags to filter your result. Spaces are allowed. Seperate them by ;
+          </Text>
+          <TextInput
+            style={searchStyle.filter_input}
+            value={filterText}
+            multiline={true}
+            onChangeText={setFilterText}
+            placeholder="Ex: news;bible study;posts"
+          />
+        </View>
 
-
-                )}
-                ListFooterComponent={() => (
-                    <View style={AdminPanelStyle.scroll_view_fix}></View>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-            />
-            
-
-        </SafeAreaView>
+        <View style={searchStyle.filter_box}>
+          <Text style={searchStyle.filter_text}>
+            Enter usernames of authors to get only their posts. Spaces are
+            allowed. Seperate them by ;
+          </Text>
+          <TextInput
+            style={searchStyle.filter_input}
+            value={authorsText}
+            multiline={true}
+            onChangeText={setAuthorsText}
+            placeholder="Ex: Ema;Boby"
+          />
+        </View>
+      </View>
     );
+  };
+
+  const ModifyNewsComp = ({item, index}) => {
+    // title, tags, htmL_body, thumbnail_path, pdF_path, posted_on_UTC_timezoned
+
+    const submitDeletePost = async () => {
+      Alert.alert(
+        'Delete: ' + item.title,
+        'Do you really want to delete this post?',
+        [
+          {
+            text: 'No',
+            onPress: () => {},
+          },
+          {
+            text: 'Yes',
+            onPress: async () => {
+              // TODO Send delete request
+              var isDeleted = await DeleteNews(
+                item.id,
+                item.pdF_path,
+                item.thumbnail_path,
+              );
+              Alert.alert(
+                isDeleted
+                  ? 'Deleted!: ' + item.title
+                  : "Couldn't delete: " + item.title,
+                '',
+                [
+                  {
+                    text: 'Ok',
+                    onPress: () => {},
+                  },
+                ],
+              );
+            },
+          },
+        ],
+      );
+    };
+
+    const submitEditPost = async () => {
+      navigation.navigate('AdminEditNews', {news: item});
+    };
+
+    return (
+      <View style={adminPanelStyle.news_view}>
+        <Text style={adminPanelStyle.news_text}>Id: {item.id}</Text>
+        <Text style={adminPanelStyle.news_text}>Title: {item.title}</Text>
+        <Text style={adminPanelStyle.news_text}>Tags: {item.tags}</Text>
+        <Text style={adminPanelStyle.news_text}>
+          HTML Body:{' '}
+          {item.htmL_body.length > 50
+            ? item.htmL_body.slice(0, 50) + '...'
+            : item.htmL_body}
+        </Text>
+        <Text style={adminPanelStyle.news_text}>
+          Thumbnail: {item.thumbnail_path}
+        </Text>
+        <Text style={adminPanelStyle.news_text}>PDFs: {item.pdF_path}</Text>
+        <Text style={adminPanelStyle.news_text}>
+          Posted On: {new Date(item.posted_on_UTC_timezoned).toLocaleString()}
+        </Text>
+        <Text style={adminPanelStyle.news_text}>
+          Posted by Admin: {item.posted_by_Admin_username}
+        </Text>
+
+        <TouchableOpacity
+          style={adminPanelStyle.delete_post_view}
+          onPress={submitDeletePost}>
+          <Text style={adminPanelStyle.submit_text}>❌</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={adminPanelStyle.edit_post_view}
+          onPress={submitEditPost}>
+          <Text style={adminPanelStyle.submit_text}>✏️</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  // <SearchComp />
+  return (
+    <SafeAreaView>
+      <TitleBar />
+
+      <FlatList
+        style={{backgroundColor: 'rgb(137, 190, 255)'}}
+        data={newsData}
+        renderItem={ModifyNewsComp}
+        scrollEnabled={true}
+        ListHeaderComponent={() => (
+          <View contentContainerStyle={AdminPanelStyle.box}>
+            <AddAdminComp />
+            <EditAdminComp />
+            <DeleteAdminComp />
+            <AdminPostEditor />
+            <View style={{height: 350}}></View>
+
+            <SeachC />
+            <View style={{height: 110}}></View>
+          </View>
+        )}
+        ListFooterComponent={() => (
+          <View style={AdminPanelStyle.scroll_view_fix}></View>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    </SafeAreaView>
+  );
 }
 
