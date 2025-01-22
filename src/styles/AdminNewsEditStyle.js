@@ -10,12 +10,11 @@ const adminNewsEditStyle = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: w,
-    height: 1000,
   },
 
   webview: {
     backgroundColor: 'rgb(137, 190, 255)',
-    height: 700,
+    height: 1000,
     width: w,
     alignItems: 'center',
     resizeMode: 'contain',
@@ -31,6 +30,32 @@ const adminNewsEditStyle = StyleSheet.create({
   submit_text: {
     fontSize: 20,
     textAlign: 'center',
+  },
+
+  att_cop: {
+      backgroundColor: 'rgb(60, 151, 255)',
+              borderRadius: 20,
+              padding: 10,
+              fontSize: 15,
+              color: 'rgb(1, 1, 1)',
+              padding: 7,
+              margin: 10,
+              alignItems: 'center',
+  },
+
+   att_path: {
+              fontSize: 20,
+              margin: 10,
+            },
+
+  att_button: {
+              backgroundColor: 'rgb(255, 140, 140)',
+              borderRadius: 3,
+              padding: 10,
+              fontSize: 15,
+               margin: 10,
+              color: 'rgb(1, 1, 1)',
+              alignItems: 'center',
   },
 });
 export default adminNewsEditStyle;

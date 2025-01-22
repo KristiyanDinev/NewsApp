@@ -130,14 +130,14 @@ export const SearchNews = async (search, filter, authors, page, amount) => {
     }
 }
 
-export const DeleteNews = async (id, pdfs, thumbnail) => {
+export const DeleteNews = async (id, attachments, thumbnail) => {
     try {
         var formData = new FormData();
         formData.append('Id', id);
-        formData.append('PDFs', pdfs); // path
+        formData.append('Attachments', attachments); // path
         formData.append('Thumbnail', thumbnail); // path
         formData.append('AdminUsername', Admin.username);
-        formData.append('AdminPass', Admin.password);
+        formData.append('AdminPassword', Admin.password);
 
         const res = await fetch(Host + newsEndpoint + "delete", {
             method: "POST",
@@ -156,12 +156,12 @@ export const DeleteNews = async (id, pdfs, thumbnail) => {
 export const PostNews = async (data) => {
     try {
         var formData = new FormData();
-        formData.append('AdminPass', Admin.password);
+        formData.append('AdminPassword', Admin.password);
         formData.append('AdminUsername', Admin.username);
         formData.append('Title', data[0]);
         formData.append('Tags', data[1]);
         formData.append('HTML_body', data[2]);
-        formData.append('PDFs', data[3]);
+        formData.append('Attachments', data[3]);
         formData.append('Thumbnail', data[4]);
 
         const res = await fetch(Host + newsEndpoint, {
@@ -181,13 +181,16 @@ export const PostNews = async (data) => {
 export const EditNews = async (data) => {
   try {
     var formData = new FormData();
-    formData.append('AdminPass', Admin.password);
+    formData.append('AdminPassword', Admin.password);
     formData.append('AdminUsername', Admin.username);
-    formData.append('Title', data[0]);
-    formData.append('Tags', data[1]);
-    formData.append('HTML_body', data[2]);
-    formData.append('PDFs', data[3]);
-    formData.append('Thumbnail', data[4]);
+    formData.append('Title', data.Title);
+    formData.append('Id', data.Id);
+    formData.append('Tags', data.Tags);
+    formData.append('HTML_body', data.Body);
+    formData.append('NewAttachments', data.NewAttachments);
+    formData.append('DeleteAttachments', data.DeleteAttachments);
+    formData.append('Thumbnail', data.NewThumbnail);
+    formData.append('DeleteThumbnail', data.DeleteThumbnail);
 
     const res = await fetch(Host + newsEndpoint + 'edit', {
       method: 'POST',

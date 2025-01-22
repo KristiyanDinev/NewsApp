@@ -14,8 +14,9 @@
 
 ### TODO
 - edit news in admin panel
-- Turn html in textarea into bbcode
 - Route the search results for user
+- display the current attachments and thumnnail when editing the post
+- server has to handle editing news.
 
 ### Software Requrements
 - NodeJS >= 18
@@ -73,6 +74,6 @@ Note: Another solution can be to add `ANDROID_HOME` and the location of the SDK 
 8. Finish up the setup.
 Note: It may ask you to install HAXM. Go for it. If not then you are hopefuly good.
 
-- Emulator has black screen
+- Emulator has black screen or it is too slow
 1. Wipe the date
 2. Restart emulator

@@ -66,23 +66,23 @@ const AdminPostEditor = () => {
         
         <form id="newsForm">
 			<lable>Title:</lable>
-			<input name="Title" type="text" placeholder="Post Title" id="title">
+			<input type="text" placeholder="Post Title" id="title">
 			<hr>
 			<lable>Tags:</lable>
-			<input name="Tags" type="text" placeholder="post;bible study;news" id="tags">
+			<input type="text" placeholder="post;bible study;news" id="tags">
 			<hr>
 			<lable>Body (Using SCEditor under MIT)</lable>
-			<textarea name="HTML_body" id="example" rows="20" cols="50"></textarea>
+			<textarea id="example" rows="20" cols="50"></textarea>
 			<hr>
 			<lable>Select Thumbnail (no \\ or / in the file name)</lable>
-			<input name="ThumbnailFile" type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
+			<input type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
 			<hr>
-			<lable>Select PDFs (no \\ or / in the file name)</lable>
-			<input name="PDFs" type="file" accept="application/pdf" id="p" multiple>
+			<lable>Select Attachments (no \\ or / in the file name)</lable>
+			<input type="file" id="p" multiple>
 			<hr>
 			<input type="submit" value="Submit">
 
-		</form><center>
+		</form></center>
         <script>
             var textarea = document.getElementById('example');
 			sceditor.create(textarea, {
@@ -118,7 +118,7 @@ const AdminPostEditor = () => {
                 let targetFiles = e.target.files;
                 for (let i = 0; i < targetFiles.length; i++) {
                     let f = targetFiles[i];
-                    PDFsData += f.name;
+                    PDFsData += f.name + '//';
 
                     var PDFreader = new FileReader();
                     PDFreader.onload = function() {
@@ -158,17 +158,32 @@ const AdminPostEditor = () => {
           PostData[0].length > 0 &&
           PostData[2].length > 0
         ) {
-          var isPosted = await PostNews(PostData);
-          Alert.alert(
-            isPosted ? 'Posted: ' + PostData[0] : "Can't post this post",
-            '',
+          Alert.alert('Post: '+PostData[0],
+            'Do you want to post this?',
             [
               {
-                text: 'Ok',
+                text: 'Yes',
+                onPress: async () => {
+                    var isPosted = await PostNews(PostData);
+                    Alert.alert(
+                      isPosted ? 'Posted: ' + PostData[0] : "Can't post this post",
+                      '',
+                      [
+                        {
+                          text: 'Ok',
+                          onPress: () => {},
+                        },
+                      ],
+                    );
+                },
+              },
+              {
+                text: 'No',
                 onPress: () => {},
               },
             ],
           );
+          
           return;
         }
         const i = Number(eventValue[0]);
@@ -448,6 +463,19 @@ export default function AdminPanelScreen() {
 
     return (
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        
+        <View style={{top: -330}}>
+          <Text
+          style={{
+            color: 'rgb(255, 191, 0)',
+            fontSize: 20,
+            textAlign: 'center',
+          }}>
+          Warning: When you click on the search button it refreshes the whole
+          page and all inputs will be reset
+        </Text>
+        </View>
+        
         <View style={searchStyle.search_box}>
           <TextInput
             style={searchStyle.search_text}
@@ -457,16 +485,18 @@ export default function AdminPanelScreen() {
             placeholder="Search anything..."
           />
 
-          <TouchableOpacity style={searchStyle.submit} onPress={async () => {
-            await submitSearch(text, filterText, authorsText);
-          }}>
+          <TouchableOpacity
+            style={searchStyle.submit}
+            onPress={async () => {
+              await submitSearch(text, filterText, authorsText);
+            }}>
             <Text style={searchStyle.submit_text}>🔍</Text>
           </TouchableOpacity>
         </View>
-
         <View style={searchStyle.filter_box}>
           <Text style={searchStyle.filter_text}>
-            Filter: Enter tags to filter your result. Spaces are allowed. Seperate them by ;
+            Filter: Enter tags to filter your result. Spaces are allowed.
+            Seperate them by ;
           </Text>
           <TextInput
             style={searchStyle.filter_input}
@@ -476,7 +506,6 @@ export default function AdminPanelScreen() {
             placeholder="Ex: news;bible study;posts"
           />
         </View>
-
         <View style={searchStyle.filter_box}>
           <Text style={searchStyle.filter_text}>
             Enter usernames of authors to get only their posts. Spaces are
@@ -534,7 +563,7 @@ export default function AdminPanelScreen() {
     };
 
     const submitEditPost = async () => {
-      navigation.navigate('AdminEditNews', {news: item});
+      navigation.navigate('AdminEditNews', {newsP: item});
     };
 
     return (
@@ -543,15 +572,17 @@ export default function AdminPanelScreen() {
         <Text style={adminPanelStyle.news_text}>Title: {item.title}</Text>
         <Text style={adminPanelStyle.news_text}>Tags: {item.tags}</Text>
         <Text style={adminPanelStyle.news_text}>
-          HTML Body:{' '}
-          {item.htmL_body.length > 50
-            ? item.htmL_body.slice(0, 50) + '...'
-            : item.htmL_body}
+          Body:{' '}
+          {item.bbCode_body.length > 150
+            ? item.bbCode_body.slice(0, 150) + '...'
+            : item.bbCode_body}
         </Text>
         <Text style={adminPanelStyle.news_text}>
           Thumbnail: {item.thumbnail_path}
         </Text>
-        <Text style={adminPanelStyle.news_text}>PDFs: {item.pdF_path}</Text>
+        <Text style={adminPanelStyle.news_text}>
+          Attachments: {item.attachments_path}
+        </Text>
         <Text style={adminPanelStyle.news_text}>
           Posted On: {new Date(item.posted_on_UTC_timezoned).toLocaleString()}
         </Text>
@@ -573,7 +604,7 @@ export default function AdminPanelScreen() {
       </View>
     );
   };
-  // <SearchComp />
+  
   return (
     <SafeAreaView>
       <TitleBar />
