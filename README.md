@@ -15,7 +15,6 @@
 ### TODO
 - edit news in admin panel
 - Route the search results for user
-- display the current attachments and thumnnail when editing the post
 - server has to handle editing news.
 
 ### Software Requrements

@@ -14,7 +14,7 @@ const adminNewsEditStyle = StyleSheet.create({
 
   webview: {
     backgroundColor: 'rgb(137, 190, 255)',
-    height: 1000,
+    height: 1100,
     width: w,
     alignItems: 'center',
     resizeMode: 'contain',

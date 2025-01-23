@@ -3,12 +3,13 @@ import { View, TouchableOpacity, Text, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import TitleBar from '../components/TitleBar';
 import optionsStyle from '../styles/OptionsStyle';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function OptionsScreen() {
     const navigation = useNavigation();
 
     return (
-        <View >
+        <SafeAreaView >
             <TitleBar />
             
                 <FlatList contentContainerStyle={optionsStyle.box}
@@ -43,7 +44,7 @@ export default function OptionsScreen() {
                     
             />
             
-        </View >
+        </SafeAreaView >
     );
 }
 

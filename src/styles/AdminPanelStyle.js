@@ -62,7 +62,7 @@ const adminPanelStyle = StyleSheet.create({
 
   post_webview: {
     backgroundColor: 'rgb(137, 190, 255)',
-    height: 900,
+    height: 1000,
     alignItems: 'center',
     resizeMode: 'contain',
     margin: 20,

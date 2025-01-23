@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import searchStyle from '../styles/SearchStyle'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SearchScreen() {
     const [text, setText] = useState('');
@@ -24,7 +25,7 @@ export default function SearchScreen() {
     }
 
     return (
-      <View>
+      <SafeAreaView>
         <TitleBar />
         <ScrollView contentContainerStyle={searchStyle.box}>
           <View style={searchStyle.search_box}>
@@ -68,7 +69,7 @@ export default function SearchScreen() {
             />
           </View>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
 }
 

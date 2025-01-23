@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
-  ScrollView,
   View,
   Alert,
   TouchableOpacity,
@@ -12,25 +11,31 @@ import adminNewsEditStyle from '../styles/AdminNewsEditStyle'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import {EditNews} from '../ServerManager';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AdminNewsEditScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const {newsP} = route.params;
 
+
+  var attachPath = []
+  if (newsP.attachments_path !== undefined && newsP.thumbnail_path !== undefined) {
+     attachPath = newsP.attachments_path.split(';');
+     attachPath.push(newsP.thumbnail_path);
+  } else {
+    attachPath = newsP.allAttchments;
+  }
   const [news, setNews] = useState({
     id: newsP.id,
     title: newsP.title,
     tags: newsP.tags,
     bbCode_body: newsP.bbCode_body,
-    thumbnail_path: '',
-    attachments_path: '',
+    allAttchments: attachPath,
   });
 
-  const [attachments, setAttachments] = useState(newsP.attachments_path.split(';').push(newsP.thumbnail_path));
-
   var EditValue = {
-    Id: news.id,
+    Id: newsP.id,
 
     DeleteThumbnail: false,
     NewThumbnail: '', // the thumbnail value
@@ -42,7 +47,7 @@ export default function AdminNewsEditScreen() {
     Tags: '',
     Body: '',
   };
-
+// textarea  rows="20" cols="40"
 
   const htmlEditor =
     `
@@ -60,12 +65,21 @@ export default function AdminNewsEditScreen() {
             input[type=button], input[type=submit], input[type=reset], button[type=submit] {
                 background-color:rgb(39, 108, 188);
                 border-radius: 10px;
-                font-size: 15px;
+                font-size: 20px;
                 color: black;
                 margin-top: 15px;
                 padding: 20px;
                 border-color: rgb(137, 190, 255);
                 }
+
+            #save {
+              background-color:rgb(91, 235, 108);
+                border-radius: 10px;
+                font-size: 20px;
+                color: black;
+                margin-top: 15px;
+                padding: 20px;
+            }
 
             input[type=file] {
                     font-size: 15px;
@@ -86,17 +100,20 @@ export default function AdminNewsEditScreen() {
                 font-size: 20px;
             }
 
-          
+          #bbcode {
+            height: 300px;
+            width: 360px;
+          }
 
         </style>
-
 <center>
         <h1>Editing Post</h1>
+        </center>
         <form id="newsForm" onsubmit="await subm(e);">
 			<lable>Title:</lable>
 			<input type="text" placeholder="Post Title" id="title" value="` +
     news.title +
-    `">
+    `" required>
 			<hr>
 			<lable>Tags:</lable>
 			<input type="text" placeholder="post;bible study;news" id="tags" value="` +
@@ -104,50 +121,60 @@ export default function AdminNewsEditScreen() {
     `">
 			<hr>
 			<lable>Body (Using SCEditor under MIT)</lable>
-			<textarea id="example" rows="20" cols="50">` +
-    news.bbCode_body +
-    `</textarea>
+			<input id="bbcode"  placeholder="Body for the post..." required>
 			<hr>
+      <center>
 			<lable>Select Thumbnail (no \\ or / in the file name)</lable>
-			<input type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum" value="`+news.thumbnail_path+`">
+			<input type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
+      </center>
 			<hr>
+      <center>
 			<lable>Select Attachments (no \\ or / in the file name)</lable>
-			<input type="file" id="p" value="`+news.attachments_path+`" multiple>
+			<input type="file" id="p" multiple>
+      </center>
       <hr>
-			<input type="submit" value="Submit">
+      <center>
+			<input type="submit" value="Submit"></center>
 
 		</form>
-
-    </center>
+<center>
+    <button id="save">Press to save Title, Tags and Body. Before removing any files listed bellow.</button>
+</center>
+    
         <script>
-            var textarea = document.getElementById('example');
+            var textarea = document.getElementById('bbcode');
+            textarea.value = \``+news.bbCode_body+`\`;
             sceditor.create(textarea, {
               format: 'bbcode',
               icons: 'monocons',
+              plugins: 'autosave,autoyoutube,plaintext',
+              autosave: {
+                  storageKey: '1',
+                  saveHandler: function (data) {
+                      alert(data);
+                  }
+              },
+              pastetext: {
+                  addButton: true,
+                  enabled: true // Set to true to start in enabled state
+              },
               toolbar: 'bold,italic,underline,strike,subscript,superscript,left,center,right|justify,font,size,color,code,cut,copy,paste|horizontalrule,image,link,unlink,youtube,date,time,maximize,source',
               style: 'https://cdn.jsdelivr.net/npm/sceditor@3/minified/themes/default.min.css'
             });
 
-            let titleEle = document.getElementById("title");
-            titleEle.addEventListener('input', function(e) {
-              window.ReactNativeWebView.postMessage('title_change:'+titleEle.value);
-            });
 
-            let tagsEle = document.getElementById("tags");
-            tagsEle.addEventListener('input', function(e) {
-              window.ReactNativeWebView.postMessage('tags_change:'+tagsEle.value);
-            });
+            document.getElementById("save").addEventListener('click', function() {
+              window.ReactNativeWebView.postMessage('title_change:'+document.getElementById("title").value);
+              window.ReactNativeWebView.postMessage('tags_change:'+document.getElementById("tags").value);
 
-            textarea.addEventListener('input', function(e) {
+              // body doesn't give the changed value
               window.ReactNativeWebView.postMessage('body_change:'+textarea.value);
             });
-
 
             var ThumbnailFile = "";
             let fileSelection = document.getElementById("thum");
             fileSelection.addEventListener('change', async function(e) {
                 let targetFile = e.target.files[0];
-                window.ReactNativeWebView.postMessage('thum_change:'+fileSelection.value);
                 if (targetFile) {
                     
                     ThumbnailFile += targetFile.name + ';';
@@ -187,7 +214,7 @@ export default function AdminNewsEditScreen() {
                 alert('sub');
                 window.ReactNativeWebView.postMessage('0'+document.getElementById("title").value);
                 window.ReactNativeWebView.postMessage('1'+document.getElementById("tags").value);
-                window.ReactNativeWebView.postMessage('2'+document.getElementById("example").value);
+                window.ReactNativeWebView.postMessage('2'+document.getElementById("bbcode").value);
                 window.ReactNativeWebView.postMessage('3'+PDFsData);
                 window.ReactNativeWebView.postMessage('4'+ThumbnailFile);
 
@@ -199,6 +226,8 @@ export default function AdminNewsEditScreen() {
         </script>
     
     `;
+
+    console.log("");
 
   const getHTML_Data = async e => {
     const eventValue = e.nativeEvent.data;
@@ -222,37 +251,20 @@ export default function AdminNewsEditScreen() {
     }
 
     var copyNews = news;
-
     if (eventValue.startsWith('title_change:')) {
-      const v = eventValue.slice(13);
-      copyNews.title = v;
+      copyNews.title = eventValue.slice(13);
       setNews(copyNews);
     }
 
     if (eventValue.startsWith('tags_change:')) {
-      const v = eventValue.slice(12);
-      copyNews.tags = v;
+      copyNews.tags = eventValue.slice(12);
       setNews(copyNews);
     }
-
     if (eventValue.startsWith('body_change:')) {
-      const v = eventValue.slice(12);
-      copyNews.bbCode_body = v;
+      copyNews.bbCode_body = eventValue.slice(12);
       setNews(copyNews);
+      console.log(news.bbCode_body);
     }
-
-    if (eventValue.startsWith('thum_change:')) {
-      const v = eventValue.slice(12);
-      copyNews.thumbnail_path = v;
-      setNews(copyNews);
-    }
-
-    if (eventValue.startsWith('attc_change:')) {
-      const v = eventValue.slice(12);
-      copyNews.attachments_path = v;
-      setNews(copyNews);
-    }
-
 
     const i = Number(eventValue[0]);
     const value = eventValue.slice(1);
@@ -269,57 +281,87 @@ export default function AdminNewsEditScreen() {
     }
   };
 
-  /// EditValue.DeleteAttachments += rmAtt + ';';  | news.attachments_path.replace(rmAtt + ';', '');
-  // news.attachments_path.split(';')
-  // EditValue.DeleteThumbnail = true;
 
 
   const AttComp = ({item, index}) => {
-    // .attachments_path.split(';')
-    console.log(item);
-    if (item.length == 0) {
+    const isThumbnail = index == news.allAttchments.length -1;
+    if (item.length == 0 && !isThumbnail) {
       return;
     }
 
     const delComp = () => {
-      var att = attachments;
-      if (item.startsWith('\\thumbnail\\')) {
-        EditValue.DeleteThumbnail = true;
-        att[att.length - 1] = "";
+      Alert.alert("Do you want to delete this file?",
+        item,
+        [
+          {
+            text: 'Yes',
+            onPress: () => {
+              var newNews = {
+                 id: newsP.id,
+                  title: news.title,
+                  tags: news.tags,
+                  bbCode_body: news.bbCode_body,
+                  allAttchments: news.allAttchments,
+              };
+              if (isThumbnail) {
+                EditValue.DeleteThumbnail = true;
+                newNews.allAttchments[index] = "";
 
-      } else {
-        EditValue.DeleteAttachments += item + ';';
-        att.forEach((item2, index2) => {
-            if (item2 === item && index2 !== att.length -1) {
-                att = att.splice(index2);
-            }
-        });
-      }
-      setAttachments(att);
+              } else {
+                EditValue.DeleteAttachments += item + ';';
+                for (let i in newNews.allAttchments) {
+                  if (i === newNews.allAttchments.length -1){
+                    break;
+                  }
+                  if (newNews.allAttchments[i] === item) {
+                      newNews.allAttchments[i] = "";
+                  }
+                }
+              }
+              navigation.navigate('AdminEditNews', {newsP: newNews});
+
+            },
+          },
+          {
+            text: 'No',
+            onPress: () => {},
+          },
+        ]);
+      
     }
 
-    return (
-      <View style={adminNewsEditStyle.att_cop}>
+    const comp = (
+    <View style={adminNewsEditStyle.att_cop}>
         <Text style={adminNewsEditStyle.att_path}>{item}</Text>
         <TouchableOpacity
           style={adminNewsEditStyle.att_button}
           onPress={delComp}>
           <Text style={{fontSize: 20}}>❌</Text>
         </TouchableOpacity>
+      </View>);
+
+    return isThumbnail ? 
+    
+    (
+      <View>
+        <Text style={{fontSize: 25, 
+              padding: 10, margin: 10,
+               textAlign: 'center'}}>Current Thumbnail</Text>
+    
+        {item.length == 0 ? (<View></View>) : comp}
       </View>
-    );
+    ) : comp;
   }
 
 
 
-
   return (
-    <View>
+    <SafeAreaView>
       <TitleBar />
 
       <FlatList
         style={{ backgroundColor: 'rgb(137, 190, 255)'}}
-        data={attachments}
+        data={news.allAttchments}
         renderItem={AttComp}
         scrollEnabled={true}
         keyExtractor={(item, index) => index.toString()}
@@ -338,14 +380,14 @@ export default function AdminNewsEditScreen() {
             />
             <Text style={{fontSize: 25, 
               padding: 10, margin: 10,
-               textAlign: 'center'}}>Current Thumbnail</Text>
+               textAlign: 'center'}}>Current Attachments</Text>
           </View>
         )}
         ListFooterComponent={() => (
-          <View style={{height: 500}}></View>
+          <View style={{height: 300}}></View>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

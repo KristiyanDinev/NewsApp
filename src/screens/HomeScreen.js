@@ -3,6 +3,7 @@ import { View, TextInput, TouchableOpacity, Text } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import { useNavigation } from '@react-navigation/native';
 import homeStyle from '../styles/HomeStyle'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
     const navigation = useNavigation();
@@ -18,7 +19,7 @@ export default function HomeScreen() {
     }
 
     return (
-        <View>
+        <SafeAreaView>
             <TitleBar />
             <View style={homeStyle.box}>
                 <View style={homeStyle.search_box}>
@@ -39,7 +40,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
 
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 

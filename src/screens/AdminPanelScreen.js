@@ -63,16 +63,16 @@ const AdminPostEditor = () => {
         </style>
 
 <center>
-        
+        <h1>Make a Post</h1>
         <form id="newsForm">
 			<lable>Title:</lable>
-			<input type="text" placeholder="Post Title" id="title">
+			<input type="text" placeholder="Post Title" id="title" required>
 			<hr>
 			<lable>Tags:</lable>
 			<input type="text" placeholder="post;bible study;news" id="tags">
 			<hr>
 			<lable>Body (Using SCEditor under MIT)</lable>
-			<textarea id="example" rows="20" cols="50"></textarea>
+			<textarea id="bbcode" rows="20" cols="40" placeholder="Body for the post..." required></textarea>
 			<hr>
 			<lable>Select Thumbnail (no \\ or / in the file name)</lable>
 			<input type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
@@ -84,13 +84,13 @@ const AdminPostEditor = () => {
 
 		</form></center>
         <script>
-            var textarea = document.getElementById('example');
-			sceditor.create(textarea, {
-				format: 'bbcode',
-				icons: 'monocons',
-				toolbar: 'bold,italic,underline,strike,subscript,superscript,left,center,right|justify,font,size,color,code,cut,copy,paste|horizontalrule,image,link,unlink,youtube,date,time,maximize,source',
-				style: 'https://cdn.jsdelivr.net/npm/sceditor@3/minified/themes/default.min.css'
-			});
+            var textarea = document.getElementById('bbcode');
+            sceditor.create(textarea, {
+              format: 'bbcode',
+              icons: 'monocons',
+              toolbar: 'bold,italic,underline,strike,subscript,superscript,left,center,right|justify,font,size,color,code,cut,copy,paste|horizontalrule,image,link,unlink,youtube,date,time,maximize,source',
+              style: 'https://cdn.jsdelivr.net/npm/sceditor@3/minified/themes/default.min.css'
+            });
 
 
             var ThumbnailFile = "";
@@ -137,7 +137,7 @@ const AdminPostEditor = () => {
                 
                 window.ReactNativeWebView.postMessage('0'+document.getElementById("title").value);
                 window.ReactNativeWebView.postMessage('1'+document.getElementById("tags").value);
-                window.ReactNativeWebView.postMessage('2'+document.getElementById("example").value);
+                window.ReactNativeWebView.postMessage('2'+document.getElementById("bbcode").value);
                 window.ReactNativeWebView.postMessage('3'+PDFsData);
                 window.ReactNativeWebView.postMessage('4'+ThumbnailFile);
 

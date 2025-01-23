@@ -4,6 +4,7 @@ import TitleBar from '../components/TitleBar';
 import adminLoginStyle from '../styles/AdminLoginStyle';
 import { LoginAdmin, setAdmin } from '../ServerManager';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function AdminLoginScreen() {
@@ -26,7 +27,7 @@ export default function AdminLoginScreen() {
     }
 
     return (
-        <View>
+        <SafeAreaView>
             <TitleBar />
             <View style={adminLoginStyle.box}>
 
@@ -50,7 +51,7 @@ export default function AdminLoginScreen() {
                     <Text style={adminLoginStyle.submit_text}>Login</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
