@@ -26,6 +26,7 @@ export default function AdminNewsEditScreen() {
   } else {
     attachPath = newsP.allAttchments;
   }
+
   const [news, setNews] = useState({
     id: newsP.id,
     title: newsP.title,
@@ -37,17 +38,17 @@ export default function AdminNewsEditScreen() {
   var EditValue = {
     Id: newsP.id,
 
-    DeleteThumbnail: false,
-    NewThumbnail: '', // the thumbnail value
+    DeleteThumbnail: newsP.DeleteThumbnail !== undefined ? newsP.DeleteThumbnail : false,
+    NewThumbnail: newsP.NewThumbnail !== undefined ? newsP.NewThumbnail : '', // the thumbnail value
 
-    NewAttachments: '', // the attachment values
-    DeleteAttachments: '', // the attachment paths
+    NewAttachments: newsP.NewAttachments !== undefined ? newsP.NewAttachments : '', // the attachment values
+    DeleteAttachments: newsP.DeleteAttachments !== undefined ? newsP.DeleteAttachments : '', // the attachment paths
 
     Title: '',
     Tags: '',
     Body: '',
   };
-// textarea  rows="20" cols="40"
+
 
   const htmlEditor =
     `
@@ -98,12 +99,9 @@ export default function AdminNewsEditScreen() {
 
             lable {
                 font-size: 20px;
+                margin-right: 20px;
             }
 
-          #bbcode {
-            height: 300px;
-            width: 360px;
-          }
 
         </style>
 <center>
@@ -121,7 +119,8 @@ export default function AdminNewsEditScreen() {
     `">
 			<hr>
 			<lable>Body (Using SCEditor under MIT)</lable>
-			<input id="bbcode"  placeholder="Body for the post..." required>
+			<textarea id="bbcode" rows="20" cols="45" placeholder="Body for the post..." required>`+news.bbCode_body+`</textarea>
+      
 			<hr>
       <center>
 			<lable>Select Thumbnail (no \\ or / in the file name)</lable>
@@ -138,43 +137,36 @@ export default function AdminNewsEditScreen() {
 
 		</form>
 <center>
-    <button id="save">Press to save Title, Tags and Body. Before removing any files listed bellow.</button>
+    <button id="save">Press to save (not in database) Title, Tags and Body. Before removing any files listed bellow.</button>
 </center>
     
         <script>
             var textarea = document.getElementById('bbcode');
-            textarea.value = \``+news.bbCode_body+`\`;
             sceditor.create(textarea, {
               format: 'bbcode',
               icons: 'monocons',
-              plugins: 'autosave,autoyoutube,plaintext',
+              plugins: 'autosave,autoyoutube',
               autosave: {
-                  storageKey: '1',
-                  saveHandler: function (data) {
-                      alert(data);
-                  }
-              },
-              pastetext: {
-                  addButton: true,
-                  enabled: true // Set to true to start in enabled state
+                  storageKey: '1'
               },
               toolbar: 'bold,italic,underline,strike,subscript,superscript,left,center,right|justify,font,size,color,code,cut,copy,paste|horizontalrule,image,link,unlink,youtube,date,time,maximize,source',
               style: 'https://cdn.jsdelivr.net/npm/sceditor@3/minified/themes/default.min.css'
             });
 
 
+
             document.getElementById("save").addEventListener('click', function() {
               window.ReactNativeWebView.postMessage('title_change:'+document.getElementById("title").value);
               window.ReactNativeWebView.postMessage('tags_change:'+document.getElementById("tags").value);
-
-              // body doesn't give the changed value
-              window.ReactNativeWebView.postMessage('body_change:'+textarea.value);
+              window.ReactNativeWebView.postMessage('body_change:'+sceditor.instance(textarea).val());
             });
+
 
             var ThumbnailFile = "";
             let fileSelection = document.getElementById("thum");
             fileSelection.addEventListener('change', async function(e) {
                 let targetFile = e.target.files[0];
+                ThumbnailFile = "";
                 if (targetFile) {
                     
                     ThumbnailFile += targetFile.name + ';';
@@ -194,6 +186,7 @@ export default function AdminNewsEditScreen() {
             let fileSelection1 = document.getElementById("p");
             fileSelection1.addEventListener('change', function(e) {
                 let targetFiles = e.target.files;
+                PDFsData = "";
                 for (let i = 0; i < targetFiles.length; i++) {
                     let f = targetFiles[i];
                     PDFsData += f.name + '//';
@@ -211,7 +204,7 @@ export default function AdminNewsEditScreen() {
 
             var subm = async (e) => {
               e.preventDefault();
-                alert('sub');
+
                 window.ReactNativeWebView.postMessage('0'+document.getElementById("title").value);
                 window.ReactNativeWebView.postMessage('1'+document.getElementById("tags").value);
                 window.ReactNativeWebView.postMessage('2'+document.getElementById("bbcode").value);
@@ -227,7 +220,6 @@ export default function AdminNewsEditScreen() {
     
     `;
 
-    console.log("");
 
   const getHTML_Data = async e => {
     const eventValue = e.nativeEvent.data;
@@ -263,21 +255,25 @@ export default function AdminNewsEditScreen() {
     if (eventValue.startsWith('body_change:')) {
       copyNews.bbCode_body = eventValue.slice(12);
       setNews(copyNews);
-      console.log(news.bbCode_body);
     }
 
     const i = Number(eventValue[0]);
     const value = eventValue.slice(1);
     if (i == 0) {
       EditValue.Title = value;
+
     } else if (i == 1) {
       EditValue.Tags = value;
+
     } else if (i == 2) {
       EditValue.Body = value;
+
     } else if (i == 3) {
       EditValue.NewAttachments = value;
+
     } else if (i == 4) {
       EditValue.NewThumbnail = value;
+
     }
   };
 
@@ -302,6 +298,8 @@ export default function AdminNewsEditScreen() {
                   tags: news.tags,
                   bbCode_body: news.bbCode_body,
                   allAttchments: news.allAttchments,
+                  DeleteThumbnail: '',
+                  DeleteAttachments: '',
               };
               if (isThumbnail) {
                 EditValue.DeleteThumbnail = true;
@@ -309,6 +307,7 @@ export default function AdminNewsEditScreen() {
 
               } else {
                 EditValue.DeleteAttachments += item + ';';
+                
                 for (let i in newNews.allAttchments) {
                   if (i === newNews.allAttchments.length -1){
                     break;
@@ -318,6 +317,9 @@ export default function AdminNewsEditScreen() {
                   }
                 }
               }
+              newNews.DeleteThumbnail = EditValue.DeleteThumbnail;
+              newNews.DeleteAttachments = EditValue.DeleteAttachments;
+
               navigation.navigate('AdminEditNews', {newsP: newNews});
 
             },
@@ -352,7 +354,6 @@ export default function AdminNewsEditScreen() {
       </View>
     ) : comp;
   }
-
 
 
   return (

@@ -63,7 +63,7 @@ const AdminPostEditor = () => {
         </style>
 
 <center>
-        <h1>Make a Post</h1>
+        <h1>Post</h1>
         <form id="newsForm">
 			<lable>Title:</lable>
 			<input type="text" placeholder="Post Title" id="title" required>
@@ -97,6 +97,7 @@ const AdminPostEditor = () => {
             let fileSelection = document.getElementById("thum");
             fileSelection.addEventListener('change', async function(e) {
                 let targetFile = e.target.files[0];
+                ThumbnailFile = "";
                 if (targetFile) {
                     
                     ThumbnailFile += targetFile.name + ';';
@@ -116,6 +117,7 @@ const AdminPostEditor = () => {
             let fileSelection1 = document.getElementById("p");
             fileSelection1.addEventListener('change', function(e) {
                 let targetFiles = e.target.files;
+                PDFsData = "";
                 for (let i = 0; i < targetFiles.length; i++) {
                     let f = targetFiles[i];
                     PDFsData += f.name + '//';
@@ -137,7 +139,9 @@ const AdminPostEditor = () => {
                 
                 window.ReactNativeWebView.postMessage('0'+document.getElementById("title").value);
                 window.ReactNativeWebView.postMessage('1'+document.getElementById("tags").value);
-                window.ReactNativeWebView.postMessage('2'+document.getElementById("bbcode").value);
+                // sceditor.instance(textarea).val()
+                // document.getElementById("bbcode").value
+                window.ReactNativeWebView.postMessage('2'+sceditor.instance(textarea).val());
                 window.ReactNativeWebView.postMessage('3'+PDFsData);
                 window.ReactNativeWebView.postMessage('4'+ThumbnailFile);
 
@@ -472,7 +476,8 @@ export default function AdminPanelScreen() {
             textAlign: 'center',
           }}>
           Warning: When you click on the search button it refreshes the whole
-          page and all inputs will be reset
+          page and all inputs will be reset. When any of the posts are edited you won't see the new changes here 
+          unless you search for the posts again.
         </Text>
         </View>
         
@@ -584,7 +589,7 @@ export default function AdminPanelScreen() {
           Attachments: {item.attachments_path}
         </Text>
         <Text style={adminPanelStyle.news_text}>
-          Posted On: {new Date(item.posted_on_UTC_timezoned).toLocaleString()}
+          Posted On: {new Date(item.posted_on).toLocaleString()}
         </Text>
         <Text style={adminPanelStyle.news_text}>
           Posted by Admin: {item.posted_by_Admin_username}

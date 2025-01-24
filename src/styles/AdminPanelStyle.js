@@ -25,7 +25,7 @@ const adminPanelStyle = StyleSheet.create({
   },
 
   scroll_view_fix: {
-    height: 700,
+    height: 400,
   },
 
   input: {

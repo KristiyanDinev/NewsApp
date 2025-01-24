@@ -13,9 +13,7 @@
 - Added `android:usesCleartextTraffic="true"` in `android/app/src/main/AndroidManifest.xml`. And created `android/app/src/main/res/xml/network_security_config.xml`
 
 ### TODO
-- edit news in admin panel
 - Route the search results for user
-- server has to handle editing news.
 
 ### Software Requrements
 - NodeJS >= 18
