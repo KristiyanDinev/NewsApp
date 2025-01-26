@@ -21,6 +21,7 @@ export default function HomeScreen() {
 
     var amountPerPage = 10;
 
+    const currentListOfNews = newsDataP[String(page)];
 
     const submitSearch = async () => {
         if (text.length == 0) {
@@ -129,8 +130,7 @@ export default function HomeScreen() {
                 </View>));
         }
 
-
-        return (
+        return (<View>
             <TouchableOpacity style={homeStyle.news_view1} onPress={openNews}>
                 {item.thumbnail_path.length > 0 ?
                     <ScaledImage width={Dimensions.get('window').width * 0.8} uri={GetFileURL(item.thumbnail_path)} />
@@ -144,9 +144,12 @@ export default function HomeScreen() {
                 />
 
                 <Text style={homeStyle.news_author}>Posted By: {item.posted_by_Admin_username}</Text>
-
+                <Text style={homeStyle.news_author}>Posted on: {new Date(item.posted_on).toLocaleString()}</Text>
 
             </TouchableOpacity>
+            {Number(index) === Number(currentListOfNews.length-1) ? 
+            <View style={{height: 200}}></View> : null}
+            </View>
         );
     }
 
@@ -174,13 +177,11 @@ export default function HomeScreen() {
 
                 <FlatList
                     style={homeStyle.news_list}
-                    data={newsDataP[String(page)]}
+                    data={currentListOfNews}
                     renderItem={NewsComp}
                     scrollEnabled={true}
                     keyExtractor={(item, index) => index.toString()}
-                    ListFooterComponent={()=>{
-                        <View style={{ height: 700 }}></View>
-                    }}
+                    
                 />
                 
                 
