@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, ActivityIndicator } from 'react-native';
-import homeStyle from '../styles/HomeStyle';
+import { View, Image } from 'react-native';
 
 
 export default function ScaledImage(props) {
 
     const [width, setWidth] = useState()
     const [height, setHeight] = useState()
-    const [imageLoading, setImageLoading] = useState(true)
+    //const [imageLoading, setImageLoading] = useState(true)
 
     useEffect(() => {
         Image.getSize(props.uri, (width1, height1) => {
@@ -21,9 +20,9 @@ export default function ScaledImage(props) {
                 setWidth(width1)
                 setHeight(height1)
             }
-            setImageLoading(false)
+            //setImageLoading(false)
         }, (error) => {
-            console.log("ScaledImage,Image.getSize failed with error: ", error)
+            //console.log("ScaledImage,Image.getSize failed with error: ", error)
         })
     }, [])
 
@@ -39,8 +38,6 @@ export default function ScaledImage(props) {
                     style={{ height: height * s, width: width * s, borderRadius: 30, resizeMode: 'stretch'}}
                 />
             </View>
-            : imageLoading ?
-                <ActivityIndicator size="large" />
-                : null
+            :  null
     );
 };

@@ -11,7 +11,6 @@ import {
   PostNews,
 } from '../ServerManager';
 import { WebView } from 'react-native-webview';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import adminPanelStyle from '../styles/AdminPanelStyle';
 import { useNavigation } from '@react-navigation/native';
 import searchStyle from '../styles/SearchStyle'
@@ -640,7 +639,7 @@ export default function AdminPanelScreen() {
   };
   
   return (
-    <SafeAreaView>
+    <View>
       <TitleBar />
       <FlatList style={{
         backgroundColor: "rgb(137, 190, 255)"
@@ -670,7 +669,7 @@ export default function AdminPanelScreen() {
         )}
         keyExtractor={(item, index) => index.toString()}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

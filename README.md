@@ -12,6 +12,11 @@
 - Dependencies: `npm install @react-navigation/native @react-navigation/native-stack react-native-screens react-native-safe-area-context react-native-webview`
 - Added `android:usesCleartextTraffic="true"` in `android/app/src/main/AndroidManifest.xml`. And created `android/app/src/main/res/xml/network_security_config.xml`
 
+### Rules to follow while coding the app
+- No community third-party libraries to be used. Only provided libraries and the onces that are already installed (`react-navigation`, `react-native-webview` (we can go without `react-native-webview`, but for the sake of simplicity we use it.)).
+- No extra code for the sake of the style
+- The style should be different from the world
+
 ### TODO
 - put a star on the bottom of the post (peek)
 - add saved posts as in cache . If not then as text files.

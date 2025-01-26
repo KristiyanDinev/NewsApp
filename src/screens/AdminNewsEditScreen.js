@@ -11,7 +11,6 @@ import adminNewsEditStyle from '../styles/AdminNewsEditStyle'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import {EditNews} from '../ServerManager';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AdminNewsEditScreen() {
   const navigation = useNavigation();
@@ -357,7 +356,7 @@ export default function AdminNewsEditScreen() {
 
 
   return (
-    <SafeAreaView>
+    <View>
       <TitleBar />
 
       <FlatList
@@ -388,7 +387,7 @@ export default function AdminNewsEditScreen() {
           <View style={{height: 300}}></View>
         )}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, FlatList, Image, ActivityIndicator, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Text, FlatList, Dimensions } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import homeStyle from '../styles/HomeStyle'
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { GetFileURL, SearchNews } from '../ServerManager';
 import ScaledImage from '../components/ScaledImage';
@@ -102,7 +101,7 @@ export default function HomeScreen() {
         for (let index in tagsArray) {
             count += 1;
             
-            if (count == 5 || Number(index)  === Number(tagsArray.length-1)) {
+            if (count == 4 || Number(index)  === Number(tagsArray.length-1)) {
                 count = 0;
                 tempArr.push(tagsArray[index]);
                 arrOfArr.push(tempArr);
@@ -152,7 +151,7 @@ export default function HomeScreen() {
     }
 
     return (
-        <SafeAreaView>
+        <View>
             <TitleBar />
             <View style={homeStyle.box}>
                 <View style={homeStyle.search_box}>
@@ -186,7 +185,7 @@ export default function HomeScreen() {
                 
                 
             </View>
-        </SafeAreaView>
+        </View>
     );
 }
 
