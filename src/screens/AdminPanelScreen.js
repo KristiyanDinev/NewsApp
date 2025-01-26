@@ -75,7 +75,7 @@ const AdminPostEditor = () => {
 			<textarea id="bbcode" rows="20" cols="40" placeholder="Body for the post..." required></textarea>
 			<hr>
 			<lable>Select Thumbnail (no \\ or / in the file name)</lable>
-			<input type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
+			<input type="file" accept="image/png,image/jpg,image/jpeg,image/gif" id="thum">
 			<hr>
 			<lable>Select Attachments (no \\ or / in the file name)</lable>
 			<input type="file" id="p" multiple>
@@ -434,7 +434,7 @@ export default function AdminPanelScreen() {
 
                         <AdminPostEditor />
 
-                        <SearchCompA />
+                        <SeachC />
                     </View>
                     
 
@@ -443,7 +443,36 @@ export default function AdminPanelScreen() {
                     <View style={AdminPanelStyle.scroll_view_fix}></View>
                 )}
                 keyExtractor={(item, index) => index.toString()}
-            />*/
+            />
+            
+            
+            
+            
+<ScrollView>
+        <View style={AdminPanelStyle.box}>
+          <AddAdminComp />
+          <EditAdminComp />
+          <DeleteAdminComp />
+          <AdminPostEditor />
+          <View style={{ height: 350 }}></View>
+
+          <SeachC />
+          <View style={{ height: 700 }}></View>
+        </View>
+      </ScrollView>
+
+        <FlatList
+                style={{backgroundColor: 'rgb(137, 190, 255)'}}
+                data={newsData}
+                renderItem={ModifyNewsComp}
+                scrollEnabled={true}
+                keyExtractor={(item, index) => index.toString()}
+              />
+     
+      
+      <View style={AdminPanelStyle.scroll_view_fix}></View>
+      
+      */
 
   const navigation = useNavigation();
 
@@ -613,23 +642,28 @@ export default function AdminPanelScreen() {
   return (
     <SafeAreaView>
       <TitleBar />
-
-      <FlatList
-        style={{backgroundColor: 'rgb(137, 190, 255)'}}
+      <FlatList style={{
+        backgroundColor: "rgb(137, 190, 255)"
+      }}
         data={newsData}
         renderItem={ModifyNewsComp}
         scrollEnabled={true}
         ListHeaderComponent={() => (
           <View contentContainerStyle={AdminPanelStyle.box}>
             <AddAdminComp />
-            <EditAdminComp />
-            <DeleteAdminComp />
-            <AdminPostEditor />
-            <View style={{height: 350}}></View>
 
+            <EditAdminComp />
+
+            <DeleteAdminComp />
+
+
+            <AdminPostEditor />
+            <View style={AdminPanelStyle.scroll_view_fix}></View>
             <SeachC />
-            <View style={{height: 110}}></View>
+            <View style={{height: 100}}></View>
           </View>
+
+
         )}
         ListFooterComponent={() => (
           <View style={AdminPanelStyle.scroll_view_fix}></View>

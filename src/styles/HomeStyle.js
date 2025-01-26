@@ -9,7 +9,7 @@ const homeStyle = StyleSheet.create({
         backgroundColor: "rgb(137, 190, 255)",
         alignItems: 'center',
         justifyContent: 'center',
-        height: 160,
+        height: h,
         width: w,
         flexDirection: 'column',
     },
@@ -42,6 +42,7 @@ const homeStyle = StyleSheet.create({
         maxWidth: 170,
         marginRight: 50,
         height: 48,
+        marginTop: 15,
     },
 
     search_text: {
@@ -64,5 +65,58 @@ const homeStyle = StyleSheet.create({
     submit_text: {
         fontSize: 23
     },
+
+    page_view: {
+        padding: 10,
+        margin: 5,
+        flexDirection: 'row',
+        backgroundColor: "rgb(137, 190, 255)",
+        alignItems: 'center',
+    },
+
+    page_text: {
+        color: "rgb(22, 127, 255)",
+        fontSize: 20,
+    },
+
+    cur_page_text: {
+        fontSize: 23,
+    },
+
+    news_view1: {
+        backgroundColor: 'rgb(80, 228, 254)',
+        borderRadius: 40,
+        margin: 20,
+        marginTop: 160,
+        alignItems: 'center',
+        width: w - 40,
+        flex: 1,
+    },
+
+    news_text: {
+        margin: 10,
+        fontSize: 23,
+    },
+
+    news_author: {
+        margin: 10,
+        textAlign: 'left',
+        fontSize: 23,
+    },
+
+    news_tags: {
+        margin: 10,
+        fontSize: 18,
+        padding: 10,
+        borderRadius: 20,
+        backgroundColor: 'rgb(65, 157, 255)',
+    },
+
+    news_list: {
+        backgroundColor: 'rgb(137, 190, 255)',
+        height: h,
+        flex: 1,
+    },
+
 });
 export default homeStyle;

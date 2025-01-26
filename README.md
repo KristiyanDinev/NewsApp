@@ -13,7 +13,8 @@
 - Added `android:usesCleartextTraffic="true"` in `android/app/src/main/AndroidManifest.xml`. And created `android/app/src/main/res/xml/network_security_config.xml`
 
 ### TODO
-- Route the search results for user
+- put a star on the bottom of the post (peek)
+- add saved posts as in cache . If not then as text files.
 
 ### Software Requrements
 - NodeJS >= 18

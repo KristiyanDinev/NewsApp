@@ -3,8 +3,12 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-nativ
 import TitleBar from '../components/TitleBar';
 import searchStyle from '../styles/SearchStyle'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { SearchNews } from '../ServerManager'
 
 export default function SearchScreen() {
+    const navigation = useNavigation();
+
     const [text, setText] = useState('');
     const [filterText, setFilter] = useState('');
     const [authorsText, setAuthorsText] = useState('');
@@ -21,7 +25,11 @@ export default function SearchScreen() {
              if (data.News == null) {
                return;
              }
-             // Go to News Page
+             console.log(data.News)
+            navigation.navigate('Home', {
+              newsDataP: {1: data.News}, page: 1,
+              search: text, tags: filterText, authors: authorsText
+            });
     }
 
     return (

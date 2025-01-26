@@ -204,3 +204,22 @@ export const EditNews = async (data) => {
     return false;
   }
 };
+
+
+export const GetFileURL = (endpoint) => {
+    return Host + endpoint;
+    /*
+    try {
+
+        const res = await fetch(Host + endpoint, {
+            method: 'GET',
+            redirect: redirectV,
+        });
+
+        //console.log(res.)
+         //res.status == 200;
+
+    } catch (error) {
+        return false;
+    }*/
+}

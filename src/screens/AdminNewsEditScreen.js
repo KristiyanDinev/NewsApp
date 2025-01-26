@@ -124,7 +124,7 @@ export default function AdminNewsEditScreen() {
 			<hr>
       <center>
 			<lable>Select Thumbnail (no \\ or / in the file name)</lable>
-			<input type="file" accept="image/png,image/jpg,image/jpeg,image/svg,image/apng" id="thum">
+			<input type="file" accept="image/png,image/jpg,image/jpeg,image/gif" id="thum">
       </center>
 			<hr>
       <center>
