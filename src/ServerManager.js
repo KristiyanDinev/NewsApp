@@ -208,3 +208,19 @@ export const EditNews = async (data) => {
 export const GetFileURL = (endpoint) => {
     return Host + endpoint;
 }
+
+export const DownloadFile = async (endpoint) => {
+    try {
+
+        const res = await fetch(Host + endpoint, {
+            method: 'GET',
+            redirect: redirectV,
+        });
+
+        const blob = await res.blob();
+        
+
+    } catch (error) {
+        return false;
+    }
+}

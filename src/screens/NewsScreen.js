@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, Dimensions } from 'react-native';
+import React from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import newsStyle from '../styles/NewsStyle';
 import homeStyle from '../styles/HomeStyle';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import WebView from 'react-native-webview';
+import { GetFileURL } from '../ServerManager';
 
 export default function NewsScreen() {
     const navigation = useNavigation();
@@ -35,8 +36,8 @@ export default function NewsScreen() {
 
             <FlatList style={{ flexDirection: 'row' }}
                 data={arrOfArr[x]}
-                renderItem={({ item }) =>
-                    item.length > 0 ? <Text style={homeStyle.news_tags} key={num++}>{item}</Text> : null
+                renderItem={({ item }) => // homeStyle.news_tags
+                    item.length > 0 ? <Text style={newsStyle.tags} key={num++}>{item}</Text> : null
                 }
                 keyExtractor={(item, index) => {
                     num += 1
@@ -47,12 +48,21 @@ export default function NewsScreen() {
     }
 
 
-    let attachments = newsData.attachments_path.length > 0 ? newsData.attachments_path.split(';') : []
-    const renderAttachment = ({v, i}) => {
+    const attachments = newsData.attachments_path.length > 0 ? newsData.attachments_path.split(';') : []
+    
+    const renderAttachment = ({item, index}) => {
+        if (item.length === 0) {
+            return;
+        }
+        const url = GetFileURL(item);
+        const startDownload = async () => {
+            
+        }
         return (
-            <View>
-                <Text>{v}</Text>
-            </View>
+            <TouchableOpacity style={newsStyle.attach_view} onPress={startDownload}>
+                <Text style={newsStyle.attach_text}>{item}</Text>
+                <Text style={newsStyle.attach_download_text}>Click to Download</Text>
+            </TouchableOpacity>
         );
     }
 
@@ -63,6 +73,7 @@ export default function NewsScreen() {
             <View>
 
                     <FlatList
+                    style={{ backgroundColor: 'rgb(47, 188, 212)'}}
                         data={attachments}
                         renderItem={renderAttachment}
                         scrollEnabled={true}
@@ -93,8 +104,7 @@ export default function NewsScreen() {
                                 <WebView
                                     source={{
                                         html: newsData.htmL_body}}
-                                    style={[newsStyle.webview, 
-                                        { height: newsData.htmL_body.split('\n').length * 50}]}
+                                    style={newsStyle.webview}
                                     originWhitelist={['*']}
                                     javaScriptEnabled={true}
                                     domStorageEnabled={true}
@@ -102,15 +112,19 @@ export default function NewsScreen() {
                                     scalesPageToFit={false}
                                     scrollEnabled={true}
                                 />
+
+                                <View style={newsStyle.attachments_view}>
+                                    <Text style={newsStyle.attachments_text}>Attachments.</Text>
+                                    <Text style={newsStyle.attachments_text}>💕💗💕 Feel free do download and use any of them 💕💗💕</Text>
+                                </View>
+                                
                             </View>
 
     )}
-
-                        ListFooterComponent={() => (
-                            <View style={newsStyle.attachments_view}>
-                                <Text style={newsStyle.attachments_text}>Attachments. Feel free do download and use any of them. ❤️❤️❤️</Text>
-                            </View>
+                        ListFooterComponent={()=>(
+                            <View style={{ height: 500, backgroundColor: 'rgb(47, 188, 212)'}}></View>
                         )}
+
                     />
             </View>
         </View>

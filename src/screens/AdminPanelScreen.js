@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Alert, TextInput, TouchableOpacity, FlatList , ScrollView} from 'react-native';
+import { View, Text, Alert, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import AdminPanelStyle from '../styles/AdminPanelStyle'
 import {
