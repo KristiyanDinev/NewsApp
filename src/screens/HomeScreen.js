@@ -92,7 +92,9 @@ export default function HomeScreen() {
 
     const NewsComp = ({item, index}) => {
         const openNews = async () => {
-            // open news
+            navigation.navigate('News', {
+                newsData: item
+            });
         }
 
         let tagsArray = item.tags.length > 0 ? item.tags.split(";") : [];
@@ -132,7 +134,8 @@ export default function HomeScreen() {
 
         return (<View>
             <TouchableOpacity style={homeStyle.news_view1} onPress={openNews}>
-                {item.thumbnail_path.length > 0 ?
+                <View style={{ alignItems: 'center', }}>
+                    {item.thumbnail_path.length > 0 ?
                     <ScaledImage width={Dimensions.get('window').width * 0.8} uri={GetFileURL(item.thumbnail_path)} />
                 : null}
 
@@ -142,9 +145,13 @@ export default function HomeScreen() {
                     data={comp}
                     renderItem={({ item }) => item }
                 />
-
-                <Text style={homeStyle.news_author}>Posted By: {item.posted_by_Admin_username}</Text>
+                </View>
+                
+                <View style={{alignItems: 'flex-start', marginLeft: 10}}>
+<Text style={homeStyle.news_author}>Posted By: {item.posted_by_Admin_username}</Text>
                 <Text style={homeStyle.news_author}>Posted on: {new Date(item.posted_on).toLocaleString()}</Text>
+                </View>
+                
 
             </TouchableOpacity>
             {Number(index) === Number(currentListOfNews.length-1) ? 

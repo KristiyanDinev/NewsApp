@@ -5,6 +5,13 @@ const h = Dimensions.get('window').height;
 
 
 const savedNewsStyle = StyleSheet.create({
-    box: {}
+    box: {
+        backgroundColor: "rgb(137, 190, 255)",
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: w,
+        height: h,
+    },
+
 });
 export default savedNewsStyle;

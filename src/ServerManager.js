@@ -53,7 +53,6 @@ export const AddAdmin = async (pass, username) => {
             body: formData,
             redirect: redirectV,
         });
-
         return res.status == 200;
 
     } catch (error) {
@@ -208,18 +207,4 @@ export const EditNews = async (data) => {
 
 export const GetFileURL = (endpoint) => {
     return Host + endpoint;
-    /*
-    try {
-
-        const res = await fetch(Host + endpoint, {
-            method: 'GET',
-            redirect: redirectV,
-        });
-
-        //console.log(res.)
-         //res.status == 200;
-
-    } catch (error) {
-        return false;
-    }*/
 }

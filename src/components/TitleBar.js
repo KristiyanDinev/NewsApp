@@ -6,7 +6,8 @@ import titleBarStyle from '../styles/TitleBarStyle';
 export default function TitleBar() {
     const navigation = useNavigation();
     const route = useRoute();
-    var AllowedRoutsToReturn = ["Options", "AdminLogin", "AboutApp", "ContactUs", "AdminPanel", "AdminEditNews"]
+    var AllowedRoutsToReturn = ["Options", "AdminLogin", "AboutApp", 
+        "ContactUs", "AdminPanel", "AdminEditNews", "News", "Search"]
     return (
         <View style={titleBarStyle.box}>
 

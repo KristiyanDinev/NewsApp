@@ -24,7 +24,6 @@ export default function SearchScreen() {
              if (data.News == null) {
                return;
              }
-             console.log(data.News)
             navigation.navigate('Home', {
               newsDataP: {1: data.News}, page: 1,
               search: text, tags: filterText, authors: authorsText

@@ -28,6 +28,7 @@ const homeStyle = StyleSheet.create({
         width: 250,
         padding: 10,
         marginTop: 20,
+        marginBottom: 20,
     },
 
     search_box: {
@@ -67,8 +68,8 @@ const homeStyle = StyleSheet.create({
     },
 
     page_view: {
-        padding: 10,
-        margin: 5,
+        marginTop: -10,
+        marginBottom: 10,
         flexDirection: 'row',
         backgroundColor: "rgb(137, 190, 255)",
         alignItems: 'center',
@@ -84,11 +85,11 @@ const homeStyle = StyleSheet.create({
     },
 
     news_view1: {
-        backgroundColor: 'rgb(80, 228, 254)',
+        backgroundColor: 'rgb(47, 188, 212)',
         borderRadius: 40,
         margin: 20,
         marginTop: 160,
-        alignItems: 'center',
+        
         width: w - 40,
         flex: 1,
     },
@@ -101,7 +102,7 @@ const homeStyle = StyleSheet.create({
     news_author: {
         margin: 10,
         textAlign: 'left',
-        fontSize: 23,
+        fontSize: 18,
     },
 
     news_tags: {

@@ -499,13 +499,15 @@ export default function AdminPanelScreen() {
         <View style={{top: -330}}>
           <Text
           style={{
-            color: 'rgb(255, 191, 0)',
+            color: 'rgb(169, 0, 0)',
             fontSize: 20,
             textAlign: 'center',
           }}>
           Warning: When you click on the search button it refreshes the whole
           page and all inputs will be reset. When any of the posts are edited you won't see the new changes here 
           unless you search for the posts again.
+          Don't post any posts by user `SystemAdmin`, because people need to know who posted it.
+          Unless you say who posted it and confirm it then ok, but please try not post any posts by user `SystemAdmin`.
         </Text>
         </View>
         
