@@ -1,14 +1,16 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Platform, Alert } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import newsStyle from '../styles/NewsStyle';
 import homeStyle from '../styles/HomeStyle';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import WebView from 'react-native-webview';
-import { GetFileURL } from '../ServerManager';
+import { getFevNews, GetFileURL, removeSavedNews, saveNews } from '../ServerManager';
+import { downloadFile, DownloadDirectoryPath } from 'react-native-fs';
 
-export default function NewsScreen() {
-    const navigation = useNavigation();
+
+export default async function NewsScreen() {
+    //const navigation = useNavigation();
     const route = useRoute();
     const { newsData } = route.params;
 
@@ -54,9 +56,41 @@ export default function NewsScreen() {
         if (item.length === 0) {
             return;
         }
-        const url = GetFileURL(item);
+        const url = GetFileURL(item).replaceAll('\\', '/');
         const startDownload = async () => {
-            
+            const __ = item.split('\\');
+            const name = __[__.length - 1];
+
+            const {jobId, promise} = downloadFile({
+                fromUrl: url, 
+                toFile: DownloadDirectoryPath + "/"+name
+            })
+
+            try {
+                const res = await promise;
+                if (res.statusCode !== 200) {
+                    throw new Error();
+                }
+                
+                Alert.alert("Downloaded in Download folder.", item,
+                    [
+                        {
+                            text: 'Ok',
+                            onPress: () => { },
+                        },
+                    ],
+                );
+            } catch (e) {
+                Alert.alert("Can't download this file.",
+                        item,
+                        [
+                          {
+                            text: 'Ok',
+                            onPress: () => {},
+                          },
+                        ],
+                      );
+            }
         }
         return (
             <TouchableOpacity style={newsStyle.attach_view} onPress={startDownload}>
@@ -66,6 +100,51 @@ export default function NewsScreen() {
         );
     }
 
+    console.log('1;2;3;4;'.split(';').join(';'))
+
+    let fevNewsList = await getFevNews().split(';');
+    const [isFav, setFav] = useState(fevNewsList.includes(String(newsData.id)));
+
+    const changeFav = async () => {
+        if (isFav) {
+            try {
+                await removeSavedNews(fevNewsList.join(';'), newsData.id)
+                setFav(false);
+                Alert.alert("Removed from Saved.", '',
+                    [{
+                        text: 'Ok',
+                        onPress: () => { },
+                    }]);
+                
+
+            } catch (e) {
+                Alert.alert("Can't remove this post from Saved.", '',
+                    [{
+                            text: 'Ok',
+                            onPress: () => { },
+                        }]);
+            }
+
+        } else {
+            try {
+                await saveNews(fevNewsList.join(';'), newsData.id)
+                setFav(true);
+                Alert.alert("Saved!", '',
+                    [{
+                        text: 'Ok',
+                        onPress: () => { },
+                    }]);
+
+            } catch (e) {
+                Alert.alert("Can't add this post to Saved.", '',
+                    [{
+                        text: 'Ok',
+                        onPress: () => { },
+                    }]);
+            }
+        }
+
+    }
 
     return (
         <View>
@@ -100,6 +179,16 @@ export default function NewsScreen() {
                                 <Text style={homeStyle.news_author}>Posted on: {new Date(newsData.posted_on).toLocaleString()}</Text>
                                 
                                 </View>
+
+                                <TouchableOpacity style={{ textAlign: 'center', fontSize: 23, margin: 20, padding: 5 }}
+                                    onPress={changeFav}>
+
+                                    {fevNewsList.includes(String(newsData.id)) ? 
+                                        <Text>⭐</Text> : 
+                                        <Text>☆</Text>}
+
+                                </TouchableOpacity>
+                                
 
                                 <WebView
                                     source={{

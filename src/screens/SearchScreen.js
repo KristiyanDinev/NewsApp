@@ -3,24 +3,29 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-nativ
 import TitleBar from '../components/TitleBar';
 import searchStyle from '../styles/SearchStyle'
 import { useNavigation } from '@react-navigation/native';
-import { SearchNews } from '../ServerManager'
+import { amountPerPage, GetLatestNews, SearchNews } from '../ServerManager'
 
 export default function SearchScreen() {
     const navigation = useNavigation();
+
 
     const [text, setText] = useState('');
     const [filterText, setFilter] = useState('');
     const [authorsText, setAuthorsText] = useState('');
 
     const submitSearch = async () => {
-        if (
+            var data = {};
+            if (
                text.length == 0 &&
                filterText.length == 0 &&
                authorsText.length == 0
              ) {
-               return;
+              data = await GetLatestNews(1, amountPerPage);
+
+               
+             } else {
+              data = await SearchNews(text, filterText, authorsText, 1, amountPerPage);
              }
-             var data = await SearchNews(text, filterText, authorsText, 1, 10);
              if (data.News == null) {
                return;
              }

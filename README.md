@@ -14,13 +14,12 @@
 - Modifed `/android/settings.gradle`, `/android/app/build.gradle`, `/android/app/src/main/java/com/newsapp/MainApplication.kt`
 
 ### Rules to follow while coding the app
-- No community third-party libraries to be used. Only provided libraries and the onces that are already installed (`react-navigation`, `react-native-webview` (we can go without `react-native-webview`, but for the sake of simplicity we use it.)).
+- No community third-party libraries to be used. Only provided libraries and the onces that are already installed
 - No extra code for the sake of the style
 - The style should be different from the world
 
 ### TODO
 - windows support
-- https://www.npmjs.com/package/react-native-fs
 - put a star on the bottom of the post (peek)
 - add saved posts as in cache . If not then as text files.
 

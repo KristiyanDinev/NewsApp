@@ -3,31 +3,30 @@ import { View, TextInput, TouchableOpacity, Text, FlatList, Dimensions } from 'r
 import TitleBar from '../components/TitleBar';
 import homeStyle from '../styles/HomeStyle'
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { GetFileURL, SearchNews } from '../ServerManager';
+import { amountPerPage, getFevNews, GetFileURL, GetLatestNews, SearchNews } from '../ServerManager';
 import ScaledImage from '../components/ScaledImage';
 
 export default function HomeScreen() {
     const navigation = useNavigation();
     const route = useRoute();
-    const newsDataP = route.params?.newsDataP ?? {}  // page : key | [news] : value
 
+    const newsDataP = route.params?.newsDataP ?? {}  // page : key | [news] : value
     const searchText = route.params?.search ?? '';
     const searchTags = route.params?.tags ?? '';
     const searchAuthors = route.params?.authors ?? '';
-
     const page = route.params?.page ?? 1
 
     const [text, setText] = useState('');
-
-    var amountPerPage = 10;
-
     const currentListOfNews = newsDataP[String(page)];
 
     const submitSearch = async () => {
+        let data = {};
         if (text.length == 0) {
-            return;
-        } 
-        let data = await SearchNews(text, '', '', 1, amountPerPage);
+            data = await GetLatestNews(1, amountPerPage);
+
+        } else {
+            data = await SearchNews(text, '', '', 1, amountPerPage);
+        }
         if (data.News == null) {
             return;
         }
@@ -44,11 +43,18 @@ export default function HomeScreen() {
 
     const PageControllComp = () => {
         const goForward = async () => {
-            if (text.length == 0 || newsDataP[page].length < amountPerPage) {
+            if (newsDataP[page].length < amountPerPage) {
                 return;
             }
+
             let newPage = page + 1;
-            let data = await SearchNews(searchText, searchTags, searchAuthors, newPage, amountPerPage);
+            let data = {};
+            if (text.length == 0) {
+                data = await GetLatestNews(newPage, amountPerPage);
+
+            } else {
+                data = await SearchNews(searchText, searchTags, searchAuthors, newPage, amountPerPage);
+            }
 
             if (data.News == null) {
                 return;
@@ -68,7 +74,7 @@ export default function HomeScreen() {
         }
 
         return (
-            searchText.length > 0 ? <View style={homeStyle.page_view}>
+            newsDataP[1] !== undefined ? <View style={homeStyle.page_view}>
                 {page > 1 ? <TouchableOpacity onPress={goBack}>
                     <Text style={homeStyle.page_text}> ◀ Page {page - 1} </Text></TouchableOpacity>
                     : null}
@@ -90,7 +96,7 @@ export default function HomeScreen() {
 
     var num = 0;
 
-    const NewsComp = ({item, index}) => {
+    const NewsComp = async ({item, index}) => {
         const openNews = async () => {
             navigation.navigate('News', {
                 newsData: item
@@ -132,6 +138,8 @@ export default function HomeScreen() {
                 </View>));
         }
 
+        const fevNewsList = await getFevNews().split(';');
+
         return (<View>
             <TouchableOpacity style={homeStyle.news_view1} onPress={openNews}>
                 <View style={{ alignItems: 'center', }}>
@@ -150,9 +158,12 @@ export default function HomeScreen() {
                 <View style={{alignItems: 'flex-start', marginLeft: 10}}>
 <Text style={homeStyle.news_author}>Posted By: {item.posted_by_Admin_username}</Text>
                 <Text style={homeStyle.news_author}>Posted on: {new Date(item.posted_on).toLocaleString()}</Text>
+         
                 </View>
-                
 
+                {fevNewsList.includes(String(item.id)) ?
+                    <Text style={{ textAlign: 'center', margin: 20, fontSize: 23 }}>⭐</Text> : null}
+                
             </TouchableOpacity>
             {Number(index) === Number(currentListOfNews.length-1) ? 
             <View style={{height: 200}}></View> : null}

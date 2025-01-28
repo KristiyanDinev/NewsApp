@@ -9,6 +9,7 @@ import {
   SearchNews,
   DeleteNews,
   PostNews,
+  Admin,
 } from '../ServerManager';
 import { WebView } from 'react-native-webview';
 import adminPanelStyle from '../styles/AdminPanelStyle';
@@ -169,7 +170,7 @@ const AdminPostEditor = () => {
                 onPress: async () => {
                     var isPosted = await PostNews(PostData);
                     Alert.alert(
-                      isPosted ? 'Posted: ' + PostData[0] : "Can't post this post",
+                      isPosted ? 'Posted: ' + PostData[0] : "Can't post this post.",
                       '',
                       [
                         {
@@ -508,6 +509,7 @@ export default function AdminPanelScreen() {
           unless you search for the posts again.
           Don't post any posts by user `SystemAdmin`, because people need to know who posted it.
           Unless you say who posted it and confirm it then ok, but please try not post any posts by user `SystemAdmin`.
+          If you change your password then login again.
         </Text>
         </View>
         
@@ -651,6 +653,8 @@ export default function AdminPanelScreen() {
         scrollEnabled={true}
         ListHeaderComponent={() => (
           <View contentContainerStyle={AdminPanelStyle.box}>
+
+            <Text style={{ textAlign: 'center', fontSize: 25, margin: 20}}>Logged as: {Admin.username}</Text>
             <AddAdminComp />
 
             <EditAdminComp />

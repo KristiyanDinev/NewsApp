@@ -1,8 +1,50 @@
-
+//import { Platform } from "react-native";
+import { DownloadDirectoryPath, readFile, writeFile } from "react-native-fs";
 
 const redirectV = 'follow';
+//const isAndroid = Platform.OS === 'android';
 
-// multipart/form-data
+const getSavedNewsPath = () => {
+    return DownloadDirectoryPath + "/savedNews.txt";
+}
+
+export const amountPerPage = 10;
+export const saveNews = async (currnetNews, newsId) => {
+    try {
+        await writeFile(getSavedNewsPath(), currnetNews+';' + newsId+ ';');
+
+    } catch (e) {
+        throw new Error(e);
+    }
+
+}
+
+export const removeSavedNews = async (currnetNews, newsId) => {
+    try {
+        let newList = [];
+        for (let i in currnetNews) {
+            if (currnetNews[i] !== String(newsId)) {
+                newList.push(currnetNews[i]);
+            }
+        }
+
+        await writeFile(getSavedNewsPath(), newList.join(';')+';');
+
+    } catch (e) {
+        throw new Error(e);
+    }
+
+}
+
+export const getFevNews = async () => {
+    try {
+        const str = await readFile(getSavedNewsPath());
+        return str;
+        
+    } catch (e) {
+        return '';
+    }
+}
 
 export const Host = "http://192.168.1.13:8080";
 
@@ -129,6 +171,28 @@ export const SearchNews = async (search, filter, authors, page, amount) => {
     }
 }
 
+
+export const GetLatestNews = async (page, amount) => {
+    try {
+        var formData = new FormData();
+        formData.append('page', page);
+        formData.append('amount', amount);
+
+        const res = await fetch(Host + newsEndpoint + "latest", {
+            method: "POST",
+            body: formData,
+            redirect: redirectV,
+        });
+        // res.status == 200
+        var data = await res.json();
+        return data;
+
+    } catch (error) {
+        return {};
+    }
+}
+
+
 export const DeleteNews = async (id, attachments, thumbnail) => {
     try {
         var formData = new FormData();
@@ -207,20 +271,4 @@ export const EditNews = async (data) => {
 
 export const GetFileURL = (endpoint) => {
     return Host + endpoint;
-}
-
-export const DownloadFile = async (endpoint) => {
-    try {
-
-        const res = await fetch(Host + endpoint, {
-            method: 'GET',
-            redirect: redirectV,
-        });
-
-        const blob = await res.blob();
-        
-
-    } catch (error) {
-        return false;
-    }
 }

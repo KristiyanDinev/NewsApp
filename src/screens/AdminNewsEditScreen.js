@@ -229,7 +229,7 @@ export default function AdminNewsEditScreen() {
     ) {
       var isEdited = await EditNews(EditValue);
       Alert.alert(
-        isEdited ? 'Edited: ' + EditValue.Title : "Can't edit this post",
+        isEdited ? 'Edited: ' + EditValue.Title : "Can't edit this post.",
         '',
         [
           {

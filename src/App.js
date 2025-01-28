@@ -1,7 +1,8 @@
 import React from 'react';
+import { View } from 'react-native';
 import { createStaticNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import HomeScreen from './screens/HomeScreen';
 import OptionsScreen from './screens/OptionsScreen';
 import AboutAppScreen from './screens/AboutAppScreen';
@@ -22,8 +23,7 @@ import NewsScreen from './screens/NewsScreen';
 
 
 
-
-const RootStack = createNativeStackNavigator({
+const Navigation = createStaticNavigation(createNativeStackNavigator({
   initialRouteName: 'Home',
   screenOptions: {
     headerShown: false,
@@ -41,14 +41,12 @@ const RootStack = createNativeStackNavigator({
     Search: SearchScreen,
     News: NewsScreen,
   },
-});
-
-const Navigation = createStaticNavigation(RootStack);
+}));
 
 export default function NewsApp() {
   return (
     <SafeAreaProvider>
-      <Navigation />
+        <Navigation />
     </SafeAreaProvider>
   );
 };
