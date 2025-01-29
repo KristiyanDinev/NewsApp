@@ -6,6 +6,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { amountPerPage, getFevNews, GetFileURL, GetLatestNews, SearchNews } from '../ServerManager';
 import ScaledImage from '../components/ScaledImage';
 
+
+
 export default function HomeScreen() {
     const navigation = useNavigation();
     const route = useRoute();
@@ -94,10 +96,15 @@ export default function HomeScreen() {
         );
     }
 
+    const getF_News = async () => {
+        const f = await getFevNews();
+        return f.split(';');
+    }
+
     var num = 0;
 
     const NewsComp = async ({item, index}) => {
-        const openNews = async () => {
+        const openNews = () => {
             navigation.navigate('News', {
                 newsData: item
             });
@@ -138,7 +145,7 @@ export default function HomeScreen() {
                 </View>));
         }
 
-        const fevNewsList = await getFevNews().split(';');
+        const fevNewsList = await getF_News();
 
         return (<View>
             <TouchableOpacity style={homeStyle.news_view1} onPress={openNews}>

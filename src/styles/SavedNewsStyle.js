@@ -11,6 +11,7 @@ const savedNewsStyle = StyleSheet.create({
         justifyContent: 'center',
         width: w,
         height: h,
+        flexDirection: 'column',
     },
 
 });

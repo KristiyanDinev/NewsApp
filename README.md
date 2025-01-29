@@ -9,7 +9,7 @@
 - for linking `npx react-native-asset`
 - https://emojidb.org/search-symbol-emojis
 - https://reactnavigation.org/docs/hello-react-navigation?config=static
-- Dependencies: `npm install @react-navigation/native @react-navigation/native-stack react-native-screens react-native-safe-area-context react-native-webview`, `npm install react-native-fs --save`
+- Dependencies: `npm install @react-navigation/native @react-navigation/native-stack react-native-screens react-native-webview react-native-safe-area-context`, `npm install react-native-fs --save`
 - Added `android:usesCleartextTraffic="true"` in `android/app/src/main/AndroidManifest.xml`. And created `android/app/src/main/res/xml/network_security_config.xml`
 - Modifed `/android/settings.gradle`, `/android/app/build.gradle`, `/android/app/src/main/java/com/newsapp/MainApplication.kt`
 
@@ -48,7 +48,7 @@ gradlew assembleRelease
 - You will find it in `/android/app/build/outputs/release/app-release.apk`
 
 
-### iOS
+### Windows
 Debug
 ```bash
 not for now

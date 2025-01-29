@@ -9,7 +9,7 @@ import { getFevNews, GetFileURL, removeSavedNews, saveNews } from '../ServerMana
 import { downloadFile, DownloadDirectoryPath } from 'react-native-fs';
 
 
-export default async function NewsScreen() {
+export default function NewsScreen() {
     //const navigation = useNavigation();
     const route = useRoute();
     const { newsData } = route.params;
@@ -100,15 +100,19 @@ export default async function NewsScreen() {
         );
     }
 
-    console.log('1;2;3;4;'.split(';').join(';'))
+    const getF_News = async () => {
+        const s = await getFevNews();
+        return s.split(';');
+    }
 
-    let fevNewsList = await getFevNews().split(';');
-    const [isFav, setFav] = useState(fevNewsList.includes(String(newsData.id)));
+    const [isFav, setFav] = useState(false);
 
     const changeFav = async () => {
+        const f = await getF_News();
+
         if (isFav) {
             try {
-                await removeSavedNews(fevNewsList.join(';'), newsData.id)
+                await removeSavedNews(f.join(';'), newsData.id)
                 setFav(false);
                 Alert.alert("Removed from Saved.", '',
                     [{
@@ -127,7 +131,7 @@ export default async function NewsScreen() {
 
         } else {
             try {
-                await saveNews(fevNewsList.join(';'), newsData.id)
+                await saveNews(f.join(';'), newsData.id)
                 setFav(true);
                 Alert.alert("Saved!", '',
                     [{
@@ -149,7 +153,10 @@ export default async function NewsScreen() {
     return (
         <View>
             <TitleBar />
-            <View>
+            <View onLayout={ async () => {
+                const f = await getF_News();
+                setFav(f.includes(String(newsData.id)));
+            }}>
 
                     <FlatList
                     style={{ backgroundColor: 'rgb(47, 188, 212)'}}
@@ -180,10 +187,10 @@ export default async function NewsScreen() {
                                 
                                 </View>
 
-                                <TouchableOpacity style={{ textAlign: 'center', fontSize: 23, margin: 20, padding: 5 }}
+                                <TouchableOpacity style={{ alignItems: 'center', fontSize: 23, margin: 20, padding: 5 }}
                                     onPress={changeFav}>
 
-                                    {fevNewsList.includes(String(newsData.id)) ? 
+                                    {isFav ? 
                                         <Text>⭐</Text> : 
                                         <Text>☆</Text>}
 

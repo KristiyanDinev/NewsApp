@@ -1,8 +1,7 @@
 import React from 'react';
-import { View } from 'react-native';
 import { createStaticNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import HomeScreen from './screens/HomeScreen';
 import OptionsScreen from './screens/OptionsScreen';
 import AboutAppScreen from './screens/AboutAppScreen';
@@ -46,7 +45,8 @@ const Navigation = createStaticNavigation(createNativeStackNavigator({
 export default function NewsApp() {
   return (
     <SafeAreaProvider>
-        <Navigation />
+      <Navigation />
     </SafeAreaProvider>
+    
   );
 };

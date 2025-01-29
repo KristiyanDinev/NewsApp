@@ -11,7 +11,7 @@ const getSavedNewsPath = () => {
 export const amountPerPage = 10;
 export const saveNews = async (currnetNews, newsId) => {
     try {
-        await writeFile(getSavedNewsPath(), currnetNews+';' + newsId+ ';');
+        await writeFile(getSavedNewsPath(), currnetNews + newsId+ ';');
 
     } catch (e) {
         throw new Error(e);
@@ -28,7 +28,7 @@ export const removeSavedNews = async (currnetNews, newsId) => {
             }
         }
 
-        await writeFile(getSavedNewsPath(), newList.join(';')+';');
+        await writeFile(getSavedNewsPath(), newList.length > 0 ? newList.join(';') : '');
 
     } catch (e) {
         throw new Error(e);
@@ -271,4 +271,20 @@ export const EditNews = async (data) => {
 
 export const GetFileURL = (endpoint) => {
     return Host + endpoint;
+}
+
+export const GetNewsByID = async (newsId) => {
+    try {
+
+        const res = await fetch(Host + newsEndpoint + 'id/' + newsId, {
+            method: 'GET',
+            redirect: redirectV,
+        });
+
+        const data = await res.json();
+        return data;
+
+    } catch (e) {
+        return {"News": null}
+    }
 }
