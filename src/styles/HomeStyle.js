@@ -88,7 +88,6 @@ const homeStyle = StyleSheet.create({
         backgroundColor: 'rgb(47, 188, 212)',
         borderRadius: 40,
         margin: 20,
-        marginTop: 160,
         
         width: w - 40,
         flex: 1,

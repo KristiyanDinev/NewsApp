@@ -44,9 +44,10 @@ const Navigation = createStaticNavigation(createNativeStackNavigator({
 
 export default function NewsApp() {
   return (
-    <SafeAreaProvider>
+      <SafeAreaProvider>
       <Navigation />
     </SafeAreaProvider>
+    
     
   );
 };

@@ -69,7 +69,7 @@ export default function HomeScreen() {
                 search: searchText, tags: searchTags, authors: searchAuthors });
         }
 
-        const goBack = async () => {
+        const goBack = () => {
             navigation.navigate('Home', { newsDataP: newsDataP, page: page - 1, 
                 search: searchText, tags: searchTags, authors: searchAuthors
             });
@@ -130,12 +130,12 @@ export default function HomeScreen() {
 
         let comp = [];
         for (let x in arrOfArr) {
-            comp.push((<View>
+            comp.push((<View key={++num}>
                 
                 <FlatList style={{ flexDirection: 'row' }}
                     data={arrOfArr[x]}
                     renderItem={({ item }) =>
-                        item.length > 0 ? <Text style={homeStyle.news_tags} key={num++}>{item}</Text> : null
+                        item.length > 0 ? <Text style={homeStyle.news_tags} key={++num}>{item}</Text> : null
                     }
                     keyExtractor={(item, index) => {
                         num += 1
@@ -151,7 +151,8 @@ export default function HomeScreen() {
             <TouchableOpacity style={homeStyle.news_view1} onPress={openNews}>
                 <View style={{ alignItems: 'center', }}>
                     {item.thumbnail_path.length > 0 ?
-                    <ScaledImage width={Dimensions.get('window').width * 0.8} uri={GetFileURL(item.thumbnail_path)} />
+                        <ScaledImage width={Dimensions.get('window').width * 0.8} 
+                         uri={GetFileURL(item.thumbnail_path)} />
                 : null}
 
                 <Text style={homeStyle.news_text}>{item.title}</Text>

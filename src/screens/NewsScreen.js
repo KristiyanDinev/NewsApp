@@ -211,7 +211,7 @@ export default function NewsScreen() {
 
                                 <View style={newsStyle.attachments_view}>
                                     <Text style={newsStyle.attachments_text}>Attachments.</Text>
-                                    <Text style={newsStyle.attachments_text}>💕💗💕 Feel free do download and use any of them 💕💗💕</Text>
+                                    <Text style={newsStyle.attachments_text}>Feel free do download and use any of them</Text>
                                 </View>
                                 
                             </View>

@@ -13,9 +13,11 @@ export default function ScaledImage(props) {
             if (props.width && !props.height) {
                 setWidth(props.width)
                 setHeight(height1 * (props.width / width1))
+                
             } else if (!props.width && props.height) {
                 setWidth(width1 * (props.height / height1))
                 setHeight(props.height)
+
             } else {
                 setWidth(width1)
                 setHeight(height1)

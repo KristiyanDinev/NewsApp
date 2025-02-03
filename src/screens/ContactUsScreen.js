@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import TitleBar from '../components/TitleBar';
 import contactUsStyle from '../styles/ContactUsStyle'
 
@@ -8,8 +8,13 @@ export default function ContactUsScreen() {
         <View>
             <TitleBar />
             <View style={contactUsStyle.box}>
-                <Text>Contact Us</Text>
+                <ScrollView>
+                    <Text style={contactUsStyle.title}>Contact Us</Text>
+
+                    <Text style={contactUsStyle.text}></Text>
+             </ScrollView>
             </View>
+            
         </View>
     );
 }

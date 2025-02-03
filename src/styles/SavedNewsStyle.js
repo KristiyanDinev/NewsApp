@@ -9,9 +9,21 @@ const savedNewsStyle = StyleSheet.create({
         backgroundColor: "rgb(137, 190, 255)",
         alignItems: 'center',
         justifyContent: 'center',
-        width: w,
         height: h,
+        width: w,
         flexDirection: 'column',
+    },
+
+    news_list: {
+        backgroundColor: 'rgb(137, 190, 255)',
+        height: h,
+        flex: 1,
+    },
+
+    saved_text: {
+        fontSize: 20,
+        padding: 10,
+        margin: 10,
     },
 
 });

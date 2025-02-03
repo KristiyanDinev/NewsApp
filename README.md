@@ -20,8 +20,6 @@
 
 ### TODO
 - windows support
-- put a star on the bottom of the post (peek)
-- add saved posts as in cache . If not then as text files.
 
 ### Software Requrements
 - NodeJS >= 18
@@ -58,6 +56,15 @@ Release
 ```bash
 not for now
 ```
+
+To add windows to project:
+```bash
+npm install react-native-windows --save
+npx react-native init-windows
+npx react-native autolink-windows
+```
+
+This is UWP app. Not single file app.
 
 ### Fixes for some problems for developers
 Note: Research online for videos or articles on how to fix it. 

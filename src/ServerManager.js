@@ -23,12 +23,12 @@ export const removeSavedNews = async (currnetNews, newsId) => {
     try {
         let newList = [];
         for (let i in currnetNews) {
-            if (currnetNews[i] !== String(newsId)) {
+            if (currnetNews[i] !== String(newsId) && currnetNews[i] !== ';') {
                 newList.push(currnetNews[i]);
             }
         }
 
-        await writeFile(getSavedNewsPath(), newList.length > 0 ? newList.join(';') : '');
+        await writeFile(getSavedNewsPath(), newList.length > 0 ? newList.join(';') + ';' : '');
 
     } catch (e) {
         throw new Error(e);
